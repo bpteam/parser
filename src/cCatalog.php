@@ -10,20 +10,22 @@
 namespace Parser;
 
 
-class cParser {
+class cCatalog {
 
 	/**
 	 * @var array
 	 */
-	private $_category;
+	private $_categories;
 	private $_units;
+	private $_currentPage = 1;
+
 
 	/**
 	 * @param string $name
 	 * @param string $url
 	 */
-	public function setCategory($name, $url) {
-		$this->_category[$name] = $url;
+	public function setCategoryUrl($name, $url) {
+		$this->_categories[$name] = $url;
 	}
 
 	/**
@@ -31,14 +33,14 @@ class cParser {
 	 * @return string
 	 */
 	public function getCategoryUrl($name) {
-		return $this->_category[$name];
+		return $this->_categories[$name];
 	}
 
 	/**
 	 * @return array
 	 */
 	public function getCategories(){
-		return $this->_category;
+		return $this->_categories;
 	}
 
 	/**
@@ -66,20 +68,20 @@ class cParser {
 	/**
 	 * @param string $text
 	 * @param string $regEx
-	 * @param string $parentRegEx
+	 * @param string $parentRegEx %(?<text>.*)%ims
 	 * @return bool
 	 */
-	public function category($text, $regEx = '%<a[^>]*href=[\'"](?<url>[^"]*)[\'"][^>]*>(?<name>[<]*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
+	public function categories($text, $regEx = '%<a[^>]*href=[\'"](?<url>[^"]*)[\'"][^>]*>(?<name>[<]*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
 			foreach ($result['url'] as $key => $value) {
-				$this->setCategory($result['name'][$key], $value);
+				$this->setCategoryUrl($result['name'][$key], $value);
 			}
 		}
 		return false;
 	}
 
-	public function catalog($text, $regEx = '%<a[^>]*href=[\'"](?<unique>[^"]*)[\'"][^>]*><img src=[\'"](?<param_one>[^\'"]*)[\'"]>(?<param_n>.*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
+	public function unitList($text, $regEx = '%<a[^>]*href=[\'"](?<unique>[^"]*)[\'"][^>]*><img src=[\'"](?<param_one>[^\'"]*)[\'"]>(?<param_n>.*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
 			foreach($this->grouping('unique', $result) as $uniqueName => $unit){
@@ -108,9 +110,10 @@ class cParser {
 		return $pages;
 	}
 
-	public function nextPage($currentPage, $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
+	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$pages = $this->pagination($text, $regEx, $parentRegEx);
-		return isset($pages[$currentPage+1]) ? $pages[$currentPage+1] : false;
+		$this->_currentPage++;
+		return isset($pages[$this->_currentPage]) ? $pages[$this->_currentPage] : false;
 	}
 
 	private function parsingText($text, $mainRegEx, $parentRegEx){
@@ -136,14 +139,15 @@ class cParser {
 
 	private function grouping($uniqueRow, $data){
 		if(isset($data[$uniqueRow])){
+			$groupData = array();
 			foreach ($data[$uniqueRow] as $uniqueKey => $uniqueValue) {
 				$unit = array();
 				foreach(array_keys($data) as $row){
-					$unit[$row] = $data[$row][$uniqueKey];
+					$unit[$row] = trim($data[$row][$uniqueKey]);
 				}
-				$data[$unit[$uniqueRow]] = $unit;
+				$groupData[$unit[$uniqueRow]] = $unit;
 			}
-			return $data;
+			return $groupData;
 		}
 		return array();
 	}
