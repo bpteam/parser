@@ -12,7 +12,17 @@ namespace Parser;
 
 class cGeneratorRegEx {
 
-	static function GenerateFromHtmlTag($tag){
-
+	static function fromHtmlTag($tag){
+		$replaceData = array(
+			'%["\']%ms' => '["\']?',
+			'%\s+%ms' => '\s*',
+			'%>%ms' => '[^>]*>',
+			'%<(\w+)%ms' => '<$1[^>]*',
+			'%=%ms' => '\s*=\s*',
+		);
+		foreach ($replaceData as $regEx => $replace) {
+			$tag = preg_replace($regEx, $replace, $tag);
+		}
+		return '%'.$tag.'%';
 	}
 } 

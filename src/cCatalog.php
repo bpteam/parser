@@ -62,8 +62,24 @@ class cCatalog {
 	}
 
 	public function getUnit($name){
-		return $this->_units[$name];
+		return isset($this->_units[$name]) ? $this->_units[$name] : array();
 	}
+
+	/**
+	 * @param int $currentPage
+	 */
+	public function setCurrentPage($currentPage) {
+		$this->_currentPage = $currentPage;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getCurrentPage() {
+		return $this->_currentPage;
+	}
+
+
 
 	/**
 	 * @param string $text
@@ -92,6 +108,13 @@ class cCatalog {
 		return false;
 	}
 
+	/**
+	 * @param string        $unitName
+	 * @param string        $text
+	 * @param array|string  $regEx
+	 * @param string        $parentRegEx
+	 * @return bool
+	 */
 	public function unit($unitName, $text, $regEx = array('%(?<param_one><a[^>]+>)%ims', '%(?<param_n><div>[^<]+</div>)%ims'), $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
@@ -103,17 +126,19 @@ class cCatalog {
 
 	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
+		$result['num'] = array_unique($result['num']);
+		asort($result['num']);
 		$pages = array();
-		foreach($result['url'] as $key => $value){
-			$pages[$result['num'][$key]] = $value;
+		foreach($result['num'] as $key => $value){
+			$pages[$value] = $result['url'][$key];
 		}
 		return $pages;
 	}
 
 	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$pages = $this->pagination($text, $regEx, $parentRegEx);
-		$this->_currentPage++;
-		return isset($pages[$this->_currentPage]) ? $pages[$this->_currentPage] : false;
+		$this->setCurrentPage($this->getCurrentPage() + 1);
+		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
 	}
 
 	private function parsingText($text, $mainRegEx, $parentRegEx){
