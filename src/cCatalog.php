@@ -84,7 +84,7 @@ class cCatalog {
 	/**
 	 * @param string $text
 	 * @param string $regEx
-	 * @param string $parentRegEx %(?<text>.*)%ims
+	 * @param string $parentRegEx
 	 * @return bool
 	 */
 	public function categories($text, $regEx = '%<a[^>]*href=[\'"](?<url>[^"]*)[\'"][^>]*>(?<name>[<]*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){

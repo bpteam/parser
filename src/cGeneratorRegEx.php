@@ -16,8 +16,8 @@ class cGeneratorRegEx {
 		$replaceData = array(
 			'%["\']%ms' => '["\']?',
 			'%\s+%ms' => '\s*',
-			'%>%ms' => '[^>]*>',
-			'%<(\w+)%ms' => '<$1[^>]*',
+			'%>%ms' => '[^>]*>\s*',
+			'%<(\w+)%ms' => '\s*<$1[^>]*',
 			'%=%ms' => '\s*=\s*',
 		);
 		foreach ($replaceData as $regEx => $replace) {
