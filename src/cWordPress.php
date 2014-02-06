@@ -12,4 +12,14 @@ namespace Parser;
 
 class cWordPress extends cCatalog{
 
+	protected $unitListRegEx = array(
+		''
+	);
+	protected $unitRegEx = array(
+		''
+	);
+	protected $paginationRegEx = array(
+		''
+	);
+
 } 
