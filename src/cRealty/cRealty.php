@@ -12,9 +12,11 @@ namespace Parser;
 
 class cRealty extends cCatalog{
 
-	public $typeSettle = array(
+	public $typeSettle;
 
-	);
+	function __construct(){
+		$this->typeSettle = $this->loadConfig('type_settle');
+	}
 
 	public static function analysedAdRealty($text) {
 
@@ -52,7 +54,7 @@ class cRealty extends cCatalog{
 		return count($answer) ? $answer[0] : false;
 	}
 
-	public function getSettleType($text, $pattern){
+	public function getSettleType($text){
 
 	}
 

@@ -18,6 +18,7 @@ class cCatalog {
 	private $_categories;
 	private $_units;
 	private $_currentPage = 1;
+	private $_configDir = 'config';
 
 
 	/**
@@ -79,7 +80,26 @@ class cCatalog {
 		return $this->_currentPage;
 	}
 
+	/**
+	 * @param string $configDir
+	 */
+	public function setConfigDir($configDir) {
+		$this->_configDir = $configDir;
+	}
 
+	/**
+	 * @return string
+	 */
+	public function getConfigDir() {
+		return $this->_configDir;
+	}
+
+
+
+
+	public function loadConfig($name){
+		return require $name;
+	}
 
 	/**
 	 * @param string $text
