@@ -42,8 +42,33 @@ class cRealty extends cCatalog{
 		return $data;
 	}
 
-	public function getSettleInfo($text, $settles = array('Москва' => 'Москва'), $type = array('city' => 'Город', 'village' => 'Деревня')){
+	/**
+	 * @param string $text
+	 * @param array  $pattern array('moscow' => '%Моско?в(а|ы|е|(ск(ой|ая)))%imsu', 'new_york'=>'Нью-йорк')
+	 * @return bool|string
+	 */
+	public function getSettleName($text, $pattern){
+		$answer = $this->search($text, $pattern);
+		return count($answer) ? $answer[0] : false;
+	}
 
+	public function getSettleType($text, $pattern){
+
+	}
+
+	/**
+	 * @param string $text
+	 * @param array  $pattern
+	 * @return array
+	 */
+	private function search($text, $pattern){
+		$data = array();
+		foreach($pattern as $name => $regEx){
+			if(preg_match($regEx, $text)){
+				$data[] = $name;
+			}
+		}
+		return $data;
 	}
 
 	public function getTypeApartment($text){
