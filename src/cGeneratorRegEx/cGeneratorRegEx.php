@@ -23,6 +23,15 @@ class cGeneratorRegEx {
 		foreach ($replaceData as $regEx => $replace) {
 			$tag = preg_replace($regEx, $replace, $tag);
 		}
-		return '%'.$tag.'%';
+		return $tag;
+	}
+
+	static function allLetter($text){
+		preg_match_all('%(?<symbol>.)%', $text, $match);
+		$regEx = '';
+		foreach($match['symbol'] as $symbol){
+			$regEx .= '(' . mb_strtoupper($symbol). '|' . mb_strtolower($symbol) . ')';
+		}
+		return $regEx;
 	}
 } 
