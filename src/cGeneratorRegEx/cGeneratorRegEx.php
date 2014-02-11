@@ -34,4 +34,18 @@ class cGeneratorRegEx {
 		}
 		return $regEx;
 	}
+
+	static function buildOrFromArray($data, &$recursiveData = array()){
+		if(is_array($data)){
+			foreach($data as $value){
+				if(is_array($value)){
+					self::buildOrFromArray($value, $recursiveData);
+				} else {
+					$recursiveData[] = $value;
+				}
+			}
+		}
+		$or = '('.implode('|',array_unique($recursiveData)).')';
+		return strlen($or)>3 ? $or : '' ;
+	}
 } 
