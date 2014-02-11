@@ -11,35 +11,41 @@ namespace Parser;
 
 
 class cPhone extends cCatalog{
-	public $countryCode;
+	private $_countryCode;
+	private $_settleCode;
+	private $_mobileCode;
+	private $_separator = '(?:\(|\)|\-|\_|\[|\]|\s+){0,3}';
 
-	public function convertPhone($ad) {
-		//Находит телефон в объявлении и конвертирует под общий шаблон
-		$c_w = '(?:\(|\)|\-|\_|\[|\]|\s+)*';
-		$reg = "#(?<country_code>7|38|8)?$c_w((?<operator_code_ua>0(39|50|63|6[6-8]|9[1-9]))|(?<operator_code_ru>9([0-9]{2})))$c_w(?<1_number>\d)$c_w(?<2_number>\d)$c_w(?<3_number>\d)$c_w(?<4_number>\d)$c_w(?<5_number>\d)$c_w(?<6_number>\d)$c_w(?<7_number>\d)#ims";
-		if (preg_match_all($reg, $ad, $phone_matches)) {
-			//Это мобильный номер
-			foreach ($phone_matches['1_number'] as $phone_key => $phone_value) {
-				$phone = "+";
-				if ($phone_matches['operator_code_ua'][$phone_key]) $phone .= "38" . $phone_matches['operator_code_ua'][$phone_key];
-				elseif ($phone_matches['operator_code_ru'][$phone_key]) $phone .= "7" . $phone_matches['operator_code_ru'][$phone_key];
-				for ($i = 1; $i <= 7; $i++) $phone .= $phone_matches[$i . '_number'][$phone_key];
-				$phone_array[] = $phone;
-			}
-		}
-		if (preg_match_all("#([^\d]{3}|^)(?<country_code>38|8)?$c_w(?<city_code>064([0-9]{1,2}))?$c_w(?<1_number>\d)$c_w(?<2_number>\d)$c_w(?<3_number>\d)$c_w(?<4_number>\d)$c_w(?<5_number>\d)$c_w(?<6_number>\d)?([^\d]{3}.*$|$)#ims", $ad, $phone_matches)) {
-			// Это стационарный номер
-			foreach ($phone_matches['1_number'] as $phone_key => $phone_value) {
-				$phone = "";
-				$phone .= $phone_matches['country_code'][$phone_key] . $phone_matches['city_code'][$phone_key];
-				for ($i = 1; $i <= 6; $i++) $phone .= $phone_matches[$i . '_number'][$phone_key];
-				$phone_array[] = $phone;
-			}
-		}
-		if (!isset($phone_array)) {
-			echo __FILE__ . __LINE__ . "Номер телефона не определен: " . $ad;
-			return false;
-		}
-		return $phone_array;
+	function __construct(){
+		$this->_classDir = dirname(__FILE__);
+		$this->_countryCode = $this->loadConfig('country_code');
+		$this->_mobileCode = $this->loadConfig('mobile_code');
+		$this->_settleCode = $this->loadConfig('settle_code');
 	}
-} 
+
+	public function findMobile($text){
+		$regEx = '%(?<phone>(?<country_code>' . cGeneratorRegEx::buildOrFromArray($this->_countryCode) . ')?' . $this->_separator . '(?<provider>' . cGeneratorRegEx::buildOrFromArray($this->_mobileCode) . "){$this->_separator}(?<1_number>\\d){$this->_separator}(?<2_number>\\d){$this->_separator}(?<3_number>\\d){$this->_separator}(?<4_number>\\d){$this->_separator}(?<5_number>\\d){$this->_separator}(?<6_number>\\d){$this->_separator}(?<7_number>\\d)%ims";
+		$data = $this->parsingText($text,$regEx);
+		return $this->buildNumber($data, 'phone', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number'));
+	}
+
+	public function findHome($text){
+		$regEx = '%([^\d]{3}\s*|^)(?<phone>(?<country_code>' . cGeneratorRegEx::buildOrFromArray($this->_countryCode). ')?' . $this->_separator . "(?<settle_code>" . cGeneratorRegEx::buildOrFromArray($this->_settleCode) . ")?{$this->_separator}(?<1_number>\\d){$this->_separator}(?<2_number>\\d){$this->_separator}(?<3_number>\\d){$this->_separator}(?<4_number>\\d){$this->_separator}(?<5_number>\\d){$this->_separator}(?<6_number>\\d)?{$this->_separator}(?<7_number>\\d)?)([^\\d]{3}.*$|$)%ims";
+		$data = $this->parsingText($text,$regEx);
+		return $this->buildNumber($data, 'phone', array('country_code', 'settle_code', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number'));
+	}
+
+	private function buildNumber($data, $rowName = 'phone', $pattern = array('country_code', 'settle_code', 'number')){
+		$phones = array();
+		foreach($data[$rowName] as $key => $value){
+			$phone = '';
+			foreach($pattern as $colName){
+				if(isset($data[$colName][$key])){
+					$phone .= $data[$colName][$key];
+				}
+			}
+			$phones[] = $phone;
+		}
+		return $phones;
+	}
+}
