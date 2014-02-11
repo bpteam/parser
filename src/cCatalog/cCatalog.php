@@ -15,10 +15,11 @@ class cCatalog {
 	/**
 	 * @var array
 	 */
-	private $_categories;
-	private $_units;
-	private $_currentPage = 1;
-	private $_configDir = 'config';
+	protected $_categories;
+	protected $_units;
+	protected $_currentPage = 1;
+	protected $_classDir;
+	protected $_configDir = 'config';
 
 
 	/**
@@ -94,11 +95,14 @@ class cCatalog {
 		return $this->_configDir;
 	}
 
-
+	function __construct() {
+		$this->_classDir = dirname(__FILE__);
+	}
 
 
 	public function loadConfig($name){
-		return require $name;
+		$config = require $this->_classDir. DIRECTORY_SEPARATOR . $this->_configDir . DIRECTORY_SEPARATOR . $name . '.php';
+		return $config;
 	}
 
 	/**
@@ -161,7 +165,7 @@ class cCatalog {
 		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
 	}
 
-	private function parsingText($text, $mainRegEx, $parentRegEx){
+	protected function parsingText($text, $mainRegEx, $parentRegEx = '%(?<text>.*)%ims'){
 		if(!is_array($mainRegEx)){
 			$mainRegEx = array($mainRegEx);
 		}
@@ -182,7 +186,7 @@ class cCatalog {
 		return array();
 	}
 
-	private function grouping($uniqueRow, $data){
+	protected function grouping($uniqueRow, $data){
 		if(isset($data[$uniqueRow])){
 			$groupData = array();
 			foreach ($data[$uniqueRow] as $uniqueKey => $uniqueValue) {
