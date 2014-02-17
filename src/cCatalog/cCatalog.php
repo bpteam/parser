@@ -20,7 +20,7 @@ class cCatalog {
 	protected $_currentPage = 1;
 	protected $_classDir;
 	protected $_configDir = 'config';
-
+	protected $_config;
 
 	/**
 	 * @param string $name
@@ -103,14 +103,28 @@ class cCatalog {
 		return $this->_configDir;
 	}
 
+	/**
+	 * @param mixed $config
+	 */
+	public function setConfig($config) {
+		$this->_config = $config;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getConfig() {
+		return $this->_config;
+	}
+
 	function __construct() {
 		$this->_classDir = dirname(__FILE__);
 	}
 
 
 	public function loadConfig($name){
-		$config = require $this->_classDir. DIRECTORY_SEPARATOR . $this->_configDir . DIRECTORY_SEPARATOR . $name . '.php';
-		return $config;
+		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . $this->_configDir . DIRECTORY_SEPARATOR . $name . '.php';
+		return $this->_config;
 	}
 
 	/**
@@ -129,6 +143,12 @@ class cCatalog {
 		return false;
 	}
 
+	/**
+	 * @param        $text
+	 * @param string $regEx
+	 * @param string $parentRegEx
+	 * @return bool
+	 */
 	public function unitList($text, $regEx = '%<a[^>]*href=[\'"](?<unique>[^"]*)[\'"][^>]*><img src=[\'"](?<param_one>[^\'"]*)[\'"]>(?<param_n>.*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
