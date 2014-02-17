@@ -59,12 +59,20 @@ class cCatalog {
 		return $this->_units;
 	}
 
-	public function addUnit($name ,$unit){
+	public function setUnit($name ,$unit){
 		$this->_units[$name] = $unit;
+	}
+
+	public function addToUnit($name ,$unit){
+			$this->_units[$name] = array_merge($this->getUnit($name), $unit);
 	}
 
 	public function getUnit($name){
 		return isset($this->_units[$name]) ? $this->_units[$name] : array();
+	}
+
+	public function getUnitData($unitName, $paramName){
+		return isset($this->_units[$unitName][$paramName]) ? $this->_units[$unitName][$paramName] : null;
 	}
 
 	/**
@@ -125,7 +133,7 @@ class cCatalog {
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
 			foreach($this->grouping('unique', $result) as $uniqueName => $unit){
-				$this->addUnit($uniqueName, $unit);
+				$this->setUnit($uniqueName, $unit);
 			}
 			return true;
 		}
@@ -142,7 +150,7 @@ class cCatalog {
 	public function unit($unitName, $text, $regEx = array('%(?<param_one><a[^>]+>)%ims', '%(?<param_n><div>[^<]+</div>)%ims'), $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
-			$this->addUnit($unitName, array_merge($this->getUnit($unitName), $result));
+			$this->addToUnit($unitName, $result);
 			return true;
 		}
 		return false;
