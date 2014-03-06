@@ -113,11 +113,28 @@ class cCatalog {
 	}
 
 	/**
+	 * @param string $name
 	 * @return mixed
 	 */
-	public function getConfig() {
-		return $this->_config;
+	public function getConfig($name) {
+		return $this->_config[$name];
 	}
+
+	/**
+	 * @param string $classDir
+	 */
+	public function setClassDir($classDir) {
+		$this->_classDir = $classDir;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getClassDir() {
+		return $this->_classDir;
+	}
+
+
 
 	public function set403RegEx($regEx){
 		$this->_403RegEx = $regEx;
@@ -194,8 +211,10 @@ class cCatalog {
 		return false;
 	}
 
-	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
-		$result = $this->parsingText($text, $regEx, $parentRegEx);
+	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
+		$result  = $this->parsingText($text, $regEx, $parentRegEx);
+		$current = $this->parsingText($text, $currentPage, $parentRegEx);
+		$this->setCurrentPage($current['current']?$current['current'][0]:1);
 		$result['num'] = array_unique($result['num']);
 		asort($result['num']);
 		$pages = array();
@@ -205,8 +224,8 @@ class cCatalog {
 		return $pages;
 	}
 
-	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $parentRegEx = '%(?<text>.*)%ims'){
-		$pages = $this->pagination($text, $regEx, $parentRegEx);
+	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
+		$pages = $this->pagination($text, $regEx, $currentPage, $parentRegEx);
 		$this->setCurrentPage($this->getCurrentPage() + 1);
 		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
 	}
@@ -245,5 +264,9 @@ class cCatalog {
 			return $groupData;
 		}
 		return array();
+	}
+
+	public function is404($text){
+		return preg_match($this->_config['404'], $text);
 	}
 } 
