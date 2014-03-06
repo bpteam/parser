@@ -60,30 +60,30 @@ class cParser {
 		return $answer;
 	}
 
-	public function parsCategory($url){
-
+	public function parsing($url){
+		$this->parseCatalog($url);
+		foreach($this->catalog->getUnits() as $unit){
+			if($text = $this->loadContent($unit['unique'])){
+				$this->parseAd($unit['unique'],$text);
+			}
+		}
 	}
 
-	public function parsCatalog($url){
+	public function parseCatalog($url){
 		do{
 			$textList = $this->loadContent($url);
 			foreach($textList as $text){
-				$this->parsListAds($text);
+				$this->parseListAds($text);
 				$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current'), $this->catalog->getConfig('pagination_parent'));
 			}
 		}while($url);
 	}
 
-	public function parsListAds($textList){
+	public function parseListAds($textList){
 		$this->catalog->unitList($textList, $this->catalog->getConfig('list'), $this->catalog->getConfig('list_parent'));
-		foreach($this->catalog->getUnits() as $unit){
-			if($text = $this->loadContent($unit['unique'])){
-				$this->parsAd($unit,$text);
-			}
-		}
 	}
 
-	public function parsAd($unit,$text){
-		$this->catalog->unit($unit['unique'], $text, $this->catalog->getConfig('ad'), $this->catalog->getConfig('ad_parent'));
+	public function parseAd($unique,$text){
+		$this->catalog->unit($unique, $text, $this->catalog->getConfig('ad'), $this->catalog->getConfig('ad_parent'));
 	}
 } 
