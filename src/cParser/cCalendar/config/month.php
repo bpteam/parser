@@ -6,15 +6,15 @@
  * Time: 13:46
  * Email: bpteam22@gmail.com
  */
-$endWordRu1 = '(ь|я|е|ю)';
-$endWordRu2 = '(а|е|у|)';
+$endWordRu1 = '(ь|я|ем?|ю|ём)';
+$endWordRu2 = '(а|ем?|у|ом|)';
 return array(
 	'ru' => array(
 		'January'  => "%ян(\.|(в(\.|ар$endWordRu1|))|)%imsu",
 		'February' => "%фев(\.|рал$endWordRu1|)%imsu",
 		'March'    => "%мар(\.|(т$endWordRu2)|)%imsu",
 		'April'    => "%ап(\.|р(\.|ел$endWordRu1)|)%imsu",
-		'May'      => "%ма(й|я|е|ю)%imsu",
+		'May'      => "%ма(й|я|ем?|ю)%imsu",
 		'June'     => "%июн(\.|$endWordRu1|)%imsu",
 		'July'     => "%июл(\.|$endWordRu1|)%imsu",
 		'August'   => "%авг(\.|(уст$endWordRu2)|)%imsu",
