@@ -12,5 +12,6 @@ require_once dirname(__FILE__) . "/src/cParser/cPhone/cPhone.php";
 require_once dirname(__FILE__) . "/src/cParser/cRealty/cRealty.php";
 require_once dirname(__FILE__) . "/src/cParser/cWordPress/cWordPress.php";
 require_once dirname(__FILE__) . "/src/cParser/cCaptcha/cCaptcha.php";
+require_once dirname(__FILE__) . "/src/cParser/cCalendar/cCalendar.php";
 require_once dirname(__FILE__) . "/src/cParser/cCaptcha/cYandexCaptcha/cYandexCaptcha.php";
 require_once dirname(__FILE__) . "/src/cGeneratorRegEx/cGeneratorRegEx.php";
