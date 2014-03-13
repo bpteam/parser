@@ -13,6 +13,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "cnfg_test.php";
 $class = 'cCalendar';
 $functions = array(
 	'month',
+	'chronology',
 );
 
 echo $class ."</br>";
@@ -46,5 +47,18 @@ function cCalendar_month(){
 
 function cCalendar_chronology(){
 	$calendar = new \Parser\cCalendar();
-
+	$chronologyLines = array(
+		'yesterday' => 'вчера вчерашний вчерашнего вчерашнему вчерашняя вчерашней вчерашнюю вчерашние вчерашних вчерашним вчерашними',
+		'today' => 'сегодня сегодняшний сегодняшнего сегодняшнему сегодняшняя сегодняшней сегодняшнюю сегодняшние сегодняшних сегодняшним сегодняшними',
+		'tomorrow' => 'завтра завтрашний завтрашнего завтрашнему завтрашняя завтрашней завтрашнюю завтрашние завтрашних завтрашним завтрашними',
+	);
+	foreach($chronologyLines as $name => $chronologyText){
+		$chronologyNames = explode(" ", $chronologyText);
+		foreach($chronologyNames as $chronologyWord){
+			if($name != $calendar->getChronologyName($chronologyWord)){
+				return false;
+			}
+		}
+	}
+	return true;
 }

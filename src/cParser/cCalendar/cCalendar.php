@@ -38,4 +38,13 @@ class cCalendar  extends cCatalog{
 		}
 		return false;
 	}
+
+	public function getChronologyName($text, $lang = 'ru'){
+		foreach($this->_chronology[$lang] as $data => $pattern){
+			if(preg_match($pattern,$text)){
+				return $data;
+			}
+		}
+		return false;
+	}
 }
