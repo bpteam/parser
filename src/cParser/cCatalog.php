@@ -21,8 +21,8 @@ class cCatalog {
 	protected $_classDir;
 	protected $_configDir = 'config';
 	protected $_config;
-	protected $_403RegEx = '%<h1>\s*403 Forbidden\s*</h1>%ims';
-	protected $_404RegEx = '%<h1>\s*404 Not Found\s*</h1>%ims';
+	protected $_403RegEx = '%403 Forbidden%ims';
+	protected $_404RegEx = '%404 Not Found%ims';
 
 	/**
 	 * @param string $name

@@ -18,12 +18,12 @@ class cRealty extends cCatalog{
 	function __construct(){
 		$this->_classDir = dirname(__FILE__);
 		$this->_regExTypeSettle = $this->loadConfig('type_settle');
-		$this->_regExTypeApartment = $this->loadConfig('apartment_');
+		$this->_regExTypeApartment = $this->loadConfig('apartment_type');
 	}
 
 	/**
 	 * @param string $text
-	 * @param array  $pattern array('moscow' => '%Моско?в(а|ы|е|(ск(ой|ая)))%imsu', 'new_york'=>'Нью-йорк')
+	 * @param array  $pattern array('moscow' => '%Моско?в(а|ы|е|(ск(ой|ая)))%imsu', 'new_york'=>'%Нью-йорк%imsu')
 	 * @return bool|string
 	 */
 	public function getSettleName($text, $pattern){
