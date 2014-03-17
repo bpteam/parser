@@ -38,6 +38,8 @@ class cParser {
 	 */
 	public $captcha;
 
+	public $blog;
+
 	protected $_countDouble = 0;
 	protected $_maxCountDouble = 15;
 
