@@ -12,7 +12,8 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "cnfg_test.php";
 
 $class = 'cLiveJournal';
 $functions = array(
-	'comments',
+	//'comments',
+	'parsArticle',
 );
 
 echo $class ."</br>";
@@ -22,8 +23,19 @@ runTest($functions, $class.'_');
 function cLiveJournal_comments(){
 	$lj = new \Parser\cLiveJournal();
 	$lj->setJournal('navalny');
-	$lj->setArticleData('id', 915012);
+	$lj->setId(915012);
 	$page = file_get_contents('http://navalny.livejournal.com/915012.html');
-	$lj->getAllComments($page);
-	var_dump($lj->getComments());
+	$lj->getArticleComments($page);
+	$count = count($lj->getComments());
+	return $count > 1000;
+}
+
+
+function cLiveJournal_parsArticle(){
+	$lj = new \Parser\cLiveJournal();
+	$url = 'http://tema.livejournal.com/1626227.html';
+	$page = file_get_contents($url);
+	$lj->setJournal($lj->getArticleJournal($page));
+	$lj->findArticleBlock($lj->getJournal());
+	$lj->parsArticle($page);
 }

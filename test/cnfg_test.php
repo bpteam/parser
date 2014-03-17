@@ -7,10 +7,9 @@
  * Email: bpteam22@gmail.com
  */
 ini_set('default_charset', 'utf-8');
-ini_set('display_errors',0);
+ini_set('display_errors',1);
 error_reporting(E_ALL);
 require_once dirname(__FILE__) . '/../include.php';
-require_once dirname(__FILE__) . '/../../lib3/get_content/include.php';
 
 echo "<a href='index.php'>..</a>";
 

@@ -12,29 +12,24 @@ namespace Parser;
 
 class cBlog extends cCatalog{
 
-	protected $_article;
-	protected $_comments;
+	protected $_article = '';
+	protected $_title = '';
+	protected $_tag;
+	protected $_id;
+	protected $_comments = array();
 
 	/**
-	 * @param array $article
+	 * @param string $article
 	 */
 	public function setArticle($article) {
 		$this->_article = $article;
 	}
 
 	/**
-	 * @return array
+	 * @return string
 	 */
 	public function getArticle() {
 		return $this->_article;
-	}
-
-	public function setArticleData($name,$value){
-		$this->_article[$name] = $value;
-	}
-
-	public function getArticleData($name){
-		return $this->_article[$name];
 	}
 
 	/**
@@ -51,20 +46,54 @@ class cBlog extends cCatalog{
 		return $this->_comments;
 	}
 
+	/**
+	 * @param mixed $id
+	 */
+	public function setId($id) {
+		$this->_id = $id;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getId() {
+		return $this->_id;
+	}
+
+	/**
+	 * @param string $title
+	 */
+	public function setTitle($title) {
+		$this->_title = $title;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTitle() {
+		return $this->_title;
+	}
+
+
+
 	function __construct(){
 		$this->_classDir = dirname(__FILE__);
 	}
 
 
-	public function getTitle ($page){
+	public function parsArticle($page){
 
 	}
 
-	public function getText ($page){
+	public function getArticleTitle ($page){
 
 	}
 
-	public function getAllComments($page){
+	public function getArticleText ($page){
+
+	}
+
+	public function getArticleComments($page){
 
 	}
 
@@ -72,29 +101,21 @@ class cBlog extends cCatalog{
 
 	}
 
-	public function getAllCategory($page){
+	public function getArticleCategory($page){
 
 	}
 
-	public function getAllTag($page){
-
+	public function getArticleTag($page){
+		$data = $this->parsingText($page, $this->getConfig('tag'));
+		return array_unique($data['tag']);
 	}
 
 	public function getLinks($page){
 		$data = $this->parsingText($page, $this->getConfig('list'));
 		return array_unique($data['url']);
-
 	}
 
 	public function getPrevious($page){
-
-	}
-
-	public function download($url){
-
-	}
-
-	public function update(){
 
 	}
 } 

@@ -9,11 +9,11 @@
 
 namespace Parser;
 
-require_once dirname(__FILE__) . "/../../../../../lib3/get_content/include.php";
+require_once dirname(__FILE__) . "/../../../../../loader-curl-phantomjs-proxy/include.php";
 
 class cLiveJournal extends cBlog {
-	private $_journal;
-	private $_articleTag;
+	private $_journal = '';
+	private $_articleBlock = '';
 	private $_commentPageCount = 0;
 	private $_currentCommentPage = 1;
 	/**
@@ -36,17 +36,31 @@ class cLiveJournal extends cBlog {
 	}
 
 	/**
-	 * @param string $articleTag
+	 * @param string $articleBlock
 	 */
-	public function setArticleTag($articleTag) {
-		$this->_articleTag = $articleTag;
+	public function setArticleBlock($articleBlock) {
+		$this->_articleBlock = $articleBlock;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getArticleTag() {
-		return $this->_articleTag;
+	public function getArticleBlock() {
+		return $this->_articleBlock;
+	}
+
+	/**
+	 * @param array $tag
+	 */
+	public function setTag($tag) {
+		$this->_tag = $tag;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTag() {
+		return $this->_tag;
 	}
 
 
@@ -58,19 +72,27 @@ class cLiveJournal extends cBlog {
 		$this->curl = new \GetContent\cMultiCurl();
 	}
 
-	public function getAllComments($page){
+	public function parsArticle($page){
+		$this->clearArticle();
+		$this->setId($this->getArticleId($page));
+		$this->setTitle($this->getArticleTitle($page));
+		$this->setArticle($this->getArticleText($page));
+		$this->setTag($this->getArticleTag($page));
+		$this->getArticleComments($page);
+	}
+
+	public function getArticleComments($page){
 		$commentPages = $this->parsingText($page, $this->getConfig('comment_page'));
 		$this->_commentPageCount = end($commentPages['comment_page']);
 		$json = $this->parsingText($page, $this->getConfig('comments_json'));
 		$json = current($json['comments_json']);
-		$this->_comments = array();
 		$this->_currentCommentPage = 1;
 		do{
 			$data = json_decode($json, true);
 			$this->parsComments($data['comments']);
 			$this->_currentCommentPage++;
 			if($this->_currentCommentPage <= $this->_commentPageCount){
-				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getArticleData('id').'&flat=&skip=&page='.$this->_currentCommentPage));
+				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getId().'&flat=&skip=&page='.$this->_currentCommentPage));
 			} else {
 				break;
 			}
@@ -87,7 +109,7 @@ class cLiveJournal extends cBlog {
 		$id = $data['dtalkid'];
 		if(!$this->commentExist($id)){
 			if($this->existHideComments($data)){
-				$json = $this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getArticleData('id').'&thread='.$id.'&expand_all=1');
+				$json = $this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getId().'&thread='.$id.'&expand_all=1');
 				$data = json_decode(current($json), true);
 				$this->parsComments($data['comments']);
 			} else {
@@ -110,31 +132,70 @@ class cLiveJournal extends cBlog {
 	}
 
 	public function nextPage($page){
-		$url = $this->parsingText($page, $this->getConfig('previous_url'));
+		preg_match_all($this->getConfig('previous_url'), $page, $url);
 		return isset($url['previous_url']) && $url['previous_url'][0] ? $url['previous_url'][0] : false;
 	}
 
-	public function findJournal($urlBlog){
+	public function getArticleTitle($page){
+		if(preg_match($this->getConfig('title_json'), $page, $match)){
+			$json = json_decode( $match['title_json'], true);
+			return $json['title'];
+		} else {
+			return false;
+		}
+	}
+
+	public function getArticleId($page){
+		if(preg_match($this->getConfig('title_json'), $page, $match)){
+			$json = json_decode( $match['title_json'], true);
+			return $json['ditemid'];
+		} else {
+			return false;
+		}
+	}
+
+	public function getArticleJournal($page){
+		if(preg_match($this->getConfig('title_json'), $page, $match)){
+			$json = json_decode( $match['title_json'], true);
+			return $json['journal'];
+		} else {
+			return false;
+		}
+	}
+
+	public function getArticleText ($page){
+		return \GetContent\cStringWork::betweenTag($page, $this->getArticleBlock());
+	}
+
+	public function getJournalInUrl($urlBlog){
 		$journal = $this->parsingText($urlBlog, $this->getConfig('journal'));
 		return isset($journal['journal']) && $journal['journal'][0] ? $journal['journal'][0] : false;
 	}
 
-	public function getRssUrlLJ($url){
-		return preg_replace('%(.com)/?$%ims', '$1/data/rss',$url);
+	public function getRssUrl($journalName){
+		return 'http://'.$journalName.'.livejournal.com/data/rss';
 	}
 
-	public function findArticleTag($urlBlog){
-		$rss = current($this->curl->load($this->getRssUrlLJ($urlBlog)));
+	public function findArticleBlock($journalName){
+		$rss = current($this->curl->load($this->getRssUrl($journalName)));
 		$url = \GetContent\cStringWork::betweenTag($rss,"<guid isPermaLink='true'>");
-		$article = \GetContent\cStringWork::betweenTag($rss,"<description>");
+		$item = \GetContent\cStringWork::betweenTag($rss,"<item>");
+		$article = \GetContent\cStringWork::betweenTag($item,"<description>");
 		$page = current($this->curl->load($url));
 		$needText = mb_substr(htmlspecialchars_decode($article),0,99);
-		if(preg_match('%(?<tag><[^>]+>)'.preg_quote($needText,'%').'%imsu', $page, $match)){
-			$this->setArticleTag($match['tag']);
+		if(preg_match('%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu', $page, $match)){
+			$this->setArticleBlock($match['tag']);
 			return true;
 		} else {
 			return false;
 		}
+	}
 
+	private function clearArticle(){
+		$this->setId(0);
+		$this->setTitle('');
+		$this->setArticle('');
+		$this->setTag(array());
+		$this->setComments(array());
 	}
 } 
