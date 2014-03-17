@@ -101,7 +101,9 @@ class cLiveJournal extends cBlog {
 
 	private function parsComments($comments){
 		foreach($comments as $comment){
-			$this->getCommentTree($comment);
+			if(isset($comment['dtalkid'])){
+				$this->getCommentTree($comment);
+			}
 		}
 	}
 
@@ -114,8 +116,8 @@ class cLiveJournal extends cBlog {
 				$this->parsComments($data['comments']);
 			} else {
 				$this->_comments[$id]['author'] = $data['uname'];
-				$this->_comments[$id]['avatar_url'] = $data['userpic'];
-				$this->_comments[$id]['parent'] = $data['parent'];
+				$this->_comments[$id]['avatar_url'] = isset($data['userpic'])?$data['userpic']:'';
+				$this->_comments[$id]['parent'] = isset($data['parent'])?$data['parent']:null;
 				$this->_comments[$id]['subject'] = $data['subject'];
 				$this->_comments[$id]['comment'] = $data['article'];
 				$this->_comments[$id]['timestamp'] = $data['ctime_ts'];
@@ -124,7 +126,7 @@ class cLiveJournal extends cBlog {
 	}
 
 	private function existHideComments($data){
-		return $data['leafclass'] == 'collapsed';
+		return isset($data['leafclass']) && $data['leafclass'] == 'collapsed';
 	}
 
 	private function commentExist($id){
