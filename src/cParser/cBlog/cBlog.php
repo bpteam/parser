@@ -80,6 +80,9 @@ class cBlog extends cCatalog{
 		$this->_classDir = dirname(__FILE__);
 	}
 
+	public function init($url){
+
+	}
 
 	public function parsArticle($page){
 

@@ -72,6 +72,11 @@ class cLiveJournal extends cBlog {
 		$this->curl = new \GetContent\cMultiCurl();
 	}
 
+	public function init($url){
+		$this->setJournal($this->getJournalInUrl($url));
+		$this->findArticleBlock($this->getJournal());
+	}
+
 	public function parsArticle($page){
 		$this->clearArticle();
 		$this->setId($this->getArticleId($page));
@@ -185,12 +190,23 @@ class cLiveJournal extends cBlog {
 		$article = \GetContent\cStringWork::betweenTag($item,"<description>");
 		$page = current($this->curl->load($url));
 		$needText = mb_substr(htmlspecialchars_decode($article),0,99);
+		$needText = str_replace('&apos;', "'", $needText);
 		if(preg_match('%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu', $page, $match)){
 			$this->setArticleBlock($match['tag']);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public function getLinks($page){
+		$data = $this->parsingText($page, $this->getConfig('list'));
+		foreach($data['journal'] as $key => $value){
+			if($value != $this->getJournal()){
+				unset($data['url'][$key]);
+			}
+		}
+		return array_unique($data['url']);
 	}
 
 	private function clearArticle(){
