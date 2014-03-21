@@ -65,7 +65,7 @@ function cLiveJournal_comments(){
 	$lj = new \Parser\cLiveJournal();
 	$page = file_get_contents('http://navalny.livejournal.com/915012.html');
 	$lj->setJournal($lj->getArticleJournal($page));
-	$lj->setId($lj->getArticleId($page));
+	$lj->setPostId($lj->getArticleId($page));
 	$lj->getArticleComments($page);
 	$count = count($lj->getComments());
 	return $count > 1000;

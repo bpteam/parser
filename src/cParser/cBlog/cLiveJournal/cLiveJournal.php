@@ -79,9 +79,11 @@ class cLiveJournal extends cBlog {
 
 	public function parsArticle($page){
 		$this->clearArticle();
-		$this->setId($this->getArticleId($page));
+		$this->setAuthorNic($this->getArticleAuthorNic($page));
+		$this->setAuthorId($this->getArticleAuthorId($page));
+		$this->setPostId($this->getArticleId($page));
 		$this->setTitle($this->getArticleTitle($page));
-		$this->setArticle($this->getArticleText($page));
+		$this->setPost($this->getArticleText($page));
 		$this->setTag($this->getArticleTag($page));
 		$this->getArticleComments($page);
 	}
@@ -97,7 +99,7 @@ class cLiveJournal extends cBlog {
 			$this->parsComments($data['comments']);
 			$this->_currentCommentPage++;
 			if($this->_currentCommentPage <= $this->_commentPageCount){
-				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getId().'&flat=&skip=&page='.$this->_currentCommentPage));
+				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&flat=&skip=&page='.$this->_currentCommentPage));
 			} else {
 				break;
 			}
@@ -116,7 +118,7 @@ class cLiveJournal extends cBlog {
 		$id = $data['dtalkid'];
 		if(!$this->commentExist($id)){
 			if($this->existHideComments($data)){
-				$json = $this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getId().'&thread='.$id.'&expand_all=1');
+				$json = $this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&thread='.$id.'&expand_all=1');
 				$data = json_decode(current($json), true);
 				$this->parsComments($data['comments']);
 			} else {
@@ -141,6 +143,24 @@ class cLiveJournal extends cBlog {
 	public function nextPage($page){
 		preg_match_all($this->getConfig('previous_url'), $page, $url);
 		return isset($url['previous_url']) && $url['previous_url'][0] ? $url['previous_url'][0] : false;
+	}
+
+	public function getArticleAuthorNic($page){
+		if(preg_match($this->getConfig('user_nic'), $page, $match)){
+			$json = json_decode( $match['user_nic'], true);
+			return $json['username'];
+		} else {
+			return false;
+		}
+	}
+
+	public function getArticleAuthorId($page){
+		if(preg_match($this->getConfig('user_nic'), $page, $match)){
+			$json = json_decode( $match['user_nic'], true);
+			return $json['id'];
+		} else {
+			return false;
+		}
 	}
 
 	public function getArticleTitle($page){
@@ -185,19 +205,27 @@ class cLiveJournal extends cBlog {
 
 	public function findArticleBlock($journalName){
 		$rss = current($this->curl->load($this->getRssUrl($journalName)));
-		$url = \GetContent\cStringWork::betweenTag($rss,"<guid isPermaLink='true'>");
-		$item = \GetContent\cStringWork::betweenTag($rss,"<item>");
-		$article = \GetContent\cStringWork::betweenTag($item,"<description>");
-		$page = current($this->curl->load($url));
-		$needText = mb_substr(htmlspecialchars_decode($article),0,99);
-		$needText = str_replace('&apos;', "'", $needText);
-		$regEx = '%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu';
-		if(preg_match($regEx, $page, $match)){
-			$this->setArticleBlock($match['tag']);
-			return true;
-		} else {
-			return false;
-		}
+		do{
+			$count = 0;
+			$item = \GetContent\cStringWork::betweenTag($rss,"<item>");
+			$rss = preg_replace('%(<item>)%imsu','',$rss,1,$count);
+			$url = \GetContent\cStringWork::betweenTag($item,"<guid isPermaLink='true'>");
+			$rss = preg_replace('%(<guid\s*isPermaLink=\'true\'>)%ims','',$rss,1,$count);
+			if(!$item || !$url){
+				break;
+			}
+			$article = \GetContent\cStringWork::betweenTag($item,"<description>");
+			$page = current($this->curl->load($url));
+			$needText = mb_substr(htmlspecialchars_decode($article),0,99);
+			$needText = str_replace('&apos;', "'", $needText);
+			$regEx = '%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu';
+			if(preg_match($regEx, $page, $match)){
+				$this->setArticleBlock($match['tag']);
+				return true;
+			}
+		}while(true);
+
+		return false;
 	}
 
 	public function getLinks($page){
@@ -211,9 +239,9 @@ class cLiveJournal extends cBlog {
 	}
 
 	private function clearArticle(){
-		$this->setId(0);
+		$this->setPostId(0);
 		$this->setTitle('');
-		$this->setArticle('');
+		$this->setPost('');
 		$this->setTag(array());
 		$this->setComments(array());
 	}
