@@ -12,24 +12,68 @@ namespace Parser;
 
 class cBlog extends cCatalog{
 
-	protected $_article = '';
+	protected $_post = '';
 	protected $_title = '';
 	protected $_tag;
-	protected $_id;
+	protected $_authorId;
+	protected $_authorNic;
+	protected $_postId;
 	protected $_comments = array();
 
 	/**
-	 * @param string $article
+	 * @param mixed $authorNic
 	 */
-	public function setArticle($article) {
-		$this->_article = $article;
+	public function setAuthorNic($authorNic) {
+		$this->_authorNic = $authorNic;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorNic() {
+		return $this->_authorNic;
+	}
+
+	/**
+	 * @param mixed $authorId
+	 */
+	public function setAuthorId($authorId) {
+		$this->_authorId = $authorId;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthorId() {
+		return $this->_authorId;
+	}
+
+	/**
+	 * @param mixed $tag
+	 */
+	public function setTag($tag) {
+		$this->_tag = $tag;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTag() {
+		return $this->_tag;
+	}
+
+	/**
+	 * @param string $post
+	 */
+	public function setPost($post) {
+		$this->_post = $post;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getArticle() {
-		return $this->_article;
+	public function getPost() {
+		return $this->_post;
 	}
 
 	/**
@@ -49,15 +93,15 @@ class cBlog extends cCatalog{
 	/**
 	 * @param mixed $id
 	 */
-	public function setId($id) {
-		$this->_id = $id;
+	public function setPostId($id) {
+		$this->_postId = $id;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getId() {
-		return $this->_id;
+	public function getPostId() {
+		return $this->_postId;
 	}
 
 	/**

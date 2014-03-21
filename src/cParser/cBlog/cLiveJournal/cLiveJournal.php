@@ -240,6 +240,8 @@ class cLiveJournal extends cBlog {
 
 	private function clearArticle(){
 		$this->setPostId(0);
+		$this->setAuthorNic('');
+		$this->setAuthorId(null);
 		$this->setTitle('');
 		$this->setPost('');
 		$this->setTag(array());
