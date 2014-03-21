@@ -191,7 +191,8 @@ class cLiveJournal extends cBlog {
 		$page = current($this->curl->load($url));
 		$needText = mb_substr(htmlspecialchars_decode($article),0,99);
 		$needText = str_replace('&apos;', "'", $needText);
-		if(preg_match('%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu', $page, $match)){
+		$regEx = '%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu';
+		if(preg_match($regEx, $page, $match)){
 			$this->setArticleBlock($match['tag']);
 			return true;
 		} else {
