@@ -216,7 +216,7 @@ class cLiveJournal extends cBlog {
 			}
 			$article = \GetContent\cStringWork::betweenTag($item,"<description>");
 			$page = current($this->curl->load($url));
-			$needText = mb_substr(htmlspecialchars_decode($article),0,99);
+			$needText = mb_substr(htmlspecialchars_decode($article),0,99,"UTF-8");
 			$needText = str_replace('&apos;', "'", $needText);
 			$regEx = '%(?<tag><[^>]+>)\s*'.preg_quote($needText,'%').'%imsu';
 			if(preg_match($regEx, $page, $match)){
