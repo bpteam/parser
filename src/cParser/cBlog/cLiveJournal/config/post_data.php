@@ -9,7 +9,8 @@
 return array(
 	'comments_json' => '%Site\.page\s=\s(?<comments_json>{.*});\n%Uims',
 	'title_json' => '%Site\.entry\s=\s(?<title_json>{.+});\n%Uims',
-	'tag' => '%<a[^>]*href=["\']http://[^\'"]+livejournal.com/tag/[^\'"]+["\'][^>]*>(?<tag>[^<]+)</a>%Uims',
+	'tags' => '%<a[^>]*href=["\']http://[^\'"]+livejournal.com/tag/[^\'"]+["\'][^>]*>(?<tags>[^<]+)</a>,%Uims',
+	'last_tag' => '%<a[^>]*href=["\']http://[^\'"]+livejournal.com/tag/[^\'"]+["\'][^>]*>(?<last_tag>[^<]+)</a>[^,]%Uims',
 	'comment_page' => '%<a\s*href="http://\w*\.livejournal\.com/\d+\.html\?page=(?<comment_page>\d+)\#comments">\d+</a>%Uims',
 	'journal' => '%(http://)?(?<journal>\w+)\.livejournal\.com%ims',
 	'list' => '%<a[^>]*href="(?<url>(?<unique>http://(?<journal>\w+)\.livejournal\.com/(?<id>\d+)\.html))"[^>]*>(?<title>[^><]+)</a>%imsu',
