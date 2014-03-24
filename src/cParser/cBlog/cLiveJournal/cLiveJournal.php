@@ -193,6 +193,17 @@ class cLiveJournal extends cBlog {
 	public function getArticleText ($page){
 		return \GetContent\cStringWork::betweenTag($page, $this->getArticleBlock());
 	}
+	
+	public function getArticleTag($page){
+		$tags = array();
+		if(preg_match_all($this->getConfig('tags'), $page, $matches)){
+			$tags = array_merge($tags, $matches['tags']);
+		} elseif(preg_match($this->getConfig('last_tag'), $page, $match)){
+			$tags = array_merge($tags, $match['last_tag']);
+		}
+		return array_unique($tags);
+	}
+
 
 	public function getJournalInUrl($urlBlog){
 		$journal = $this->parsingText($urlBlog, $this->getConfig('journal'));
