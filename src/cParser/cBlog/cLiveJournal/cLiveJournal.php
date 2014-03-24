@@ -90,20 +90,25 @@ class cLiveJournal extends cBlog {
 
 	public function getArticleComments($page){
 		$commentPages = $this->parsingText($page, $this->getConfig('comment_page'));
+		if(!isset($commentPages['comment_page'])) {
+			return 0;
+		}
 		$this->_commentPageCount = end($commentPages['comment_page']);
 		$json = $this->parsingText($page, $this->getConfig('comments_json'));
-		$json = current($json['comments_json']);
-		$this->_currentCommentPage = 1;
-		do{
-			$data = json_decode($json, true);
-			$this->parsComments($data['comments']);
-			$this->_currentCommentPage++;
-			if($this->_currentCommentPage <= $this->_commentPageCount){
-				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&flat=&skip=&page='.$this->_currentCommentPage));
-			} else {
-				break;
-			}
-		}while(true);
+		if(isset($json['comments_json'])){
+			$json = current($json['comments_json']);
+			$this->_currentCommentPage = 1;
+			do{
+				$data = json_decode($json, true);
+				$this->parsComments($data['comments']);
+				$this->_currentCommentPage++;
+				if($this->_currentCommentPage <= $this->_commentPageCount){
+					$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&flat=&skip=&page='.$this->_currentCommentPage));
+				} else {
+					break;
+				}
+			}while(true);
+		}
 	}
 
 	private function parsComments($comments){
@@ -198,12 +203,12 @@ class cLiveJournal extends cBlog {
 		$tags = array();
 		if(preg_match_all($this->getConfig('tags'), $page, $matches)){
 			$tags = array_merge($tags, $matches['tags']);
-		} elseif(preg_match($this->getConfig('last_tag'), $page, $match)){
-			$tags = array_merge($tags, $match['last_tag']);
+		}
+		if(preg_match($this->getConfig('last_tag'), $page, $match)){
+			$tags[] = $match['last_tag'];
 		}
 		return array_unique($tags);
 	}
-
 
 	public function getJournalInUrl($urlBlog){
 		$journal = $this->parsingText($urlBlog, $this->getConfig('journal'));
