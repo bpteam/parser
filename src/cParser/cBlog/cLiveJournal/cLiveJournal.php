@@ -9,6 +9,8 @@
 
 namespace Parser;
 
+use GetContent\cStringWork;
+
 require_once dirname(__FILE__) . "/../../../../../loader-curl-phantomjs-proxy/include.php";
 
 class cLiveJournal extends cBlog {
@@ -77,7 +79,7 @@ class cLiveJournal extends cBlog {
 		$this->findArticleBlock($this->getJournal());
 	}
 
-	public function parsArticle($page){
+	public function parsArticle($page, $url = null){
 		$this->clearArticle();
 		$this->setAuthorNic($this->getArticleAuthorNic($page));
 		$this->setAuthorId($this->getArticleAuthorId($page));
@@ -93,22 +95,24 @@ class cLiveJournal extends cBlog {
 		$this->_commentPageCount = isset($commentPages['comment_page']) ? end($commentPages['comment_page']) : 1;
 		$json = $this->parsingText($page, $this->getConfig('comments_json'));
 		if(isset($json['comments_json'])){
-			$json = current($json['comments_json']);
 			$this->_currentCommentPage = 1;
 			do{
+				$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&flat=&skip=&page='.$this->_currentCommentPage));
 				$data = json_decode($json, true);
-				$this->parsComments($data['comments']);
+				if(isset($data['comments'])){
+					$this->parsCommentsJson($data['comments']);
+				} elseif($data[0]['thread']){
+					$this->parsCommentsHtml($data);
+				}
 				$this->_currentCommentPage++;
-				if($this->_currentCommentPage <= $this->_commentPageCount){
-					$json = current($this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&flat=&skip=&page='.$this->_currentCommentPage));
-				} else {
+				if($this->_currentCommentPage > $this->_commentPageCount){
 					break;
 				}
 			}while(true);
 		}
 	}
 
-	private function parsComments($comments){
+	private function parsCommentsJson($comments){
 		foreach($comments as $comment){
 			if(isset($comment['dtalkid'])){
 				$this->getCommentTree($comment);
@@ -122,7 +126,7 @@ class cLiveJournal extends cBlog {
 			if($this->existHideComments($data)){
 				$json = $this->curl->load('http://'.$this->getJournal().'.livejournal.com/'.$this->getJournal().'/__rpc_get_thread?journal='.$this->getJournal().'&itemid='.$this->getPostId().'&thread='.$id.'&expand_all=1');
 				$data = json_decode(current($json), true);
-				$this->parsComments($data['comments']);
+				$this->parsCommentsJson($data['comments']);
 			} else {
 				$this->_comments[$id]['author'] = $data['uname'];
 				$this->_comments[$id]['avatar_url'] = isset($data['userpic'])?$data['userpic']:'';
@@ -131,6 +135,24 @@ class cLiveJournal extends cBlog {
 				$this->_comments[$id]['comment'] = $data['article'];
 				$this->_comments[$id]['timestamp'] = $data['ctime_ts'];
 			}
+		}
+	}
+
+	protected function parsCommentsHtml($data){
+		foreach($data as $comment){
+			$this->parsCommentHtml($comment);
+		}
+	}
+	
+	protected function parsCommentHtml($comment){
+		$data = $this->parsingText($comment['html'], $this->getConfig('comment_html'));
+		if($data){
+			$id = $data['id'][0];
+			$this->_comments[$id]['author'] = $data['author'][0];
+			$this->_comments[$id]['avatar_url'] = $data['avatar_url'][0];
+			$this->_comments[$id]['parent'] = $data['parent'][0];
+			$this->_comments[$id]['timestamp'] = strtotime($data['timestamp'][0]);
+			$this->_comments[$id]['comment'] = \GetContent\cStringWork::betweenTag( $comment['html'],'<div class="comment-text">');
 		}
 	}
 

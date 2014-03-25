@@ -162,7 +162,8 @@ class cBlog extends cCatalog{
 		return array_unique($data['url']);
 	}
 
-	public function getPrevious($page){
-
+	public function isLinkFromThisBlog($url, $blogUrl){
+		$data = parse_url($url);
+		return $data['host'] == $blogUrl;
 	}
 } 
