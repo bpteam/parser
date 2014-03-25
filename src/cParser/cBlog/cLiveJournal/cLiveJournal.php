@@ -90,10 +90,7 @@ class cLiveJournal extends cBlog {
 
 	public function getArticleComments($page){
 		$commentPages = $this->parsingText($page, $this->getConfig('comment_page'));
-		if(!isset($commentPages['comment_page'])) {
-			return 0;
-		}
-		$this->_commentPageCount = end($commentPages['comment_page']);
+		$this->_commentPageCount = isset($commentPages['comment_page']) ? end($commentPages['comment_page']) : 1;
 		$json = $this->parsingText($page, $this->getConfig('comments_json'));
 		if(isset($json['comments_json'])){
 			$json = current($json['comments_json']);
