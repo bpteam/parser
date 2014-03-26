@@ -285,7 +285,7 @@ class cLiveJournal extends cBlog {
 		$this->setComments(array());
 	}
 
-	private function getArticleTimestamp(){
+	public function getArticleTimestamp(){
 		$url = 'http://m.livejournal.com/read/user/'.$this->getJournal().'/'.$this->getPostId();
 		$page = current($this->curl->load($url));
 		$time = preg_replace('%(\d{2})/(\d{2})/(\d{4}) (\d{2})\:(\d{2})%ims','$3-$2-$1 $4:$5',\GetContent\cStringWork::betweenTag($page,'<p class="item-meta">'));
