@@ -79,13 +79,14 @@ class cLiveJournal extends cBlog {
 		$this->findArticleBlock($this->getJournal());
 	}
 
-	public function parsArticle($page, $url = null){
+	public function parsArticle($page){
 		$this->clearArticle();
 		$this->setAuthorNic($this->getArticleAuthorNic($page));
 		$this->setAuthorId($this->getArticleAuthorId($page));
 		$this->setPostId($this->getArticleId($page));
 		$this->setTitle($this->getArticleTitle($page));
 		$this->setPost($this->getArticleText($page));
+		$this->setPublicTimestamp($this->getArticleTimestamp());
 		$this->setTag($this->getArticleTag($page));
 		$this->getArticleComments($page);
 	}
@@ -279,7 +280,15 @@ class cLiveJournal extends cBlog {
 		$this->setAuthorId(null);
 		$this->setTitle('');
 		$this->setPost('');
+		$this->setPublicTimestamp(0);
 		$this->setTag(array());
 		$this->setComments(array());
+	}
+
+	private function getArticleTimestamp(){
+		$url = 'http://m.livejournal.com/read/user/'.$this->getJournal().'/'.$this->getPostId();
+		$page = current($this->curl->load($url));
+		$time = preg_replace('%(\d{2})/(\d{2})/(\d{4}) (\d{2})\:(\d{2})%ims','$3-$2-$1 $4:$5',\GetContent\cStringWork::betweenTag($page,'<p class="item-meta">'));
+		return strtotime($time);
 	}
 } 

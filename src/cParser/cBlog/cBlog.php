@@ -18,7 +18,22 @@ class cBlog extends cCatalog{
 	protected $_authorId;
 	protected $_authorNic;
 	protected $_postId;
+	protected $_publicTimestamp;
 	protected $_comments = array();
+
+	/**
+	 * @param mixed $publicTimestamp
+	 */
+	public function setPublicTimestamp($publicTimestamp) {
+		$this->_publicTimestamp = $publicTimestamp;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPublicTimestamp() {
+		return $this->_publicTimestamp;
+	}
 
 	/**
 	 * @param mixed $authorNic
