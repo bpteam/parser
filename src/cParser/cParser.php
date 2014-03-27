@@ -76,7 +76,7 @@ class cParser {
 			$textList = $this->loadContent($url);
 			foreach($textList as $text){
 				$this->parseListAds($text);
-				$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current'), $this->catalog->getConfig('pagination_parent'));
+				$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current_page'), $this->catalog->getConfig('pagination_parent'));
 			}
 		}while($url);
 	}

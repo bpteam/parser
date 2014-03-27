@@ -211,10 +211,10 @@ class cCatalog {
 		return false;
 	}
 
-	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
+	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current_page>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
 		$result  = $this->parsingText($text, $regEx, $parentRegEx);
 		$current = $this->parsingText($text, $currentPage, $parentRegEx);
-		$this->setCurrentPage($current['current']?$current['current'][0]:1);
+		$this->setCurrentPage(isset($current['current_page'])?$current['current_page'][0]:1);
 		$result['num'] = array_unique($result['num']);
 		asort($result['num']);
 		$pages = array();
@@ -224,7 +224,7 @@ class cCatalog {
 		return $pages;
 	}
 
-	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
+	public function nextPage( $text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current_page>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
 		$pages = $this->pagination($text, $regEx, $currentPage, $parentRegEx);
 		$this->setCurrentPage($this->getCurrentPage() + 1);
 		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
