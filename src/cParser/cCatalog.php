@@ -237,7 +237,9 @@ class cCatalog {
 		if(preg_match($parentRegEx, $text, $match)){
 			$data = array();
 			foreach($mainRegEx as $regEx){
-				if(preg_match_all($regEx, $match['text'], $matches)){
+				if(is_array($regEx)){
+					$data = $this->parsingText($match['text'],$regEx);
+				}elseif(preg_match_all($regEx, $match['text'], $matches)){
 					$data = array_merge($data, $matches);
 				}
 			}
