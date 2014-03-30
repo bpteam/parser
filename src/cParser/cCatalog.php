@@ -27,9 +27,11 @@ class cCatalog {
 	/**
 	 * @param string $name
 	 * @param string $url
+	 * @param string $parent
 	 */
-	public function setCategoryUrl($name, $url) {
-		$this->_categories[$name] = $url;
+	public function setCategoryUrl($name, $url, $parent) {
+		$this->_categories[$name]['url'] = $url;
+		$this->_categories[$name]['parent'] = $parent;
 	}
 
 	/**
@@ -164,15 +166,16 @@ class cCatalog {
 
 	/**
 	 * @param string $text
+	 * @param string $parent
 	 * @param string $regEx
 	 * @param string $parentRegEx
 	 * @return bool
 	 */
-	public function categories($text, $regEx = '%<a[^>]*href=[\'"](?<url>[^"]*)[\'"][^>]*>(?<name>[<]*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
+	public function categories($text, $parent = '', $regEx = '%<a[^>]*href=[\'"](?<url>[^"]*)[\'"][^>]*>(?<name>[<]*)</a>%ims', $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
 			foreach ($result['url'] as $key => $value) {
-				$this->setCategoryUrl($result['name'][$key], $value);
+				$this->setCategoryUrl($result['name'][$key], $value, $parent);
 			}
 		}
 		return false;
