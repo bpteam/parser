@@ -233,7 +233,7 @@ class cCatalog {
 		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
 	}
 
-	protected function parsingText($text, $mainRegEx, $parentRegEx = '%(?<text>.*)%ims'){
+	public function parsingText($text, $mainRegEx, $parentRegEx = '%(?<text>.*)%ims'){
 		if(!is_array($mainRegEx)){
 			$mainRegEx = array($mainRegEx);
 		}
