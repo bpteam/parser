@@ -160,7 +160,7 @@ class cCatalog {
 
 
 	public function loadConfig($name){
-		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . $this->_configDir . DIRECTORY_SEPARATOR . $name . '.php';
+		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . ($this->_configDir ? $this->_configDir . DIRECTORY_SEPARATOR : '') . $name . '.php';
 		return $this->_config;
 	}
 
