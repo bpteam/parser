@@ -9,5 +9,6 @@
 return array(
 	'uk' => array(
 		'lugansk' => '0642',
+		'odessa' => '048',
 	),
 );
