@@ -37,6 +37,10 @@ class cParser {
 	 * @var cCaptcha
 	 */
 	public $captcha;
+	/**
+	 * @var cCalendar
+	 */
+	public $calendar;
 
 	public $blog;
 

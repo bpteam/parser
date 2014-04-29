@@ -16,12 +16,21 @@ class cCalendar  extends cCatalog{
 		$this->_classDir = dirname(__FILE__);
 		$this->_chronology = $this->loadConfig('chronology');
 		$this->_month = $this->loadConfig('month');
+		$this->_typeTime = $this->loadConfig('type_time');
+		$this->_time = $this->loadConfig('time');
 	}
 
 	public function getTimestamp($text, $lang = 'ru'){
 		$this->replace($text, $this->_month[$lang]);
+		$this->replace($text, $this->_time[$lang]);
 		$this->replace($text, $this->_chronology[$lang]);
-		return strtotime($text);
+		if(preg_match($this->_typeTime[$lang]['back'], $text)){
+			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
+			$timestamp = time() - strtotime($text,1);
+		} else {
+			$timestamp = strtotime($text);
+		}
+		return $timestamp;
 	}
 
 	private function replace( &$text, $patterns){
