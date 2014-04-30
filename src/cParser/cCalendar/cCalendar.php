@@ -18,6 +18,7 @@ class cCalendar  extends cCatalog{
 		$this->_month = $this->loadConfig('month');
 		$this->_typeTime = $this->loadConfig('type_time');
 		$this->_time = $this->loadConfig('time');
+		$this->_deleteSign = $this->loadConfig('delete_sign');
 	}
 
 	public function getTimestamp($text, $lang = 'ru'){
@@ -25,9 +26,11 @@ class cCalendar  extends cCatalog{
 		$this->replace($text, $this->_time[$lang]);
 		$this->replace($text, $this->_chronology[$lang]);
 		if(preg_match($this->_typeTime[$lang]['back'], $text)){
+			$this->replace($text, $this->_deleteSign[$lang]);
 			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
 			$timestamp = time() - strtotime($text,1);
 		} else {
+			$this->replace($text, $this->_deleteSign[$lang]);
 			$timestamp = strtotime($text);
 		}
 		return $timestamp;
