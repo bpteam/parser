@@ -73,13 +73,17 @@ class cPhone extends cCatalog{
 	public function hidePhone($text){
 
 		$data = $this->parsingText($text, $this->mobileRegEx);
-		foreach($data['phone'] as $phone){
-			$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+		if(isset($data['phone']) && $data['phone']){
+			foreach($data['phone'] as $phone){
+				$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+			}
 		}
 
 		$data = $this->parsingText($text, $this->homeRegEx);
-		foreach($data['phone'] as $phone){
-			$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+		if(isset($data['phone']) && $data['phone']){
+			foreach($data['phone'] as $phone){
+				$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+			}
 		}
 
 		return $text;
