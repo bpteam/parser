@@ -28,10 +28,10 @@ class cCalendar  extends cCatalog{
 		if(preg_match($this->_typeTime[$lang]['back'], $text)){
 			$this->replace($text, $this->_deleteSign[$lang]);
 			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
-			$timestamp = time() - strtotime($text,1);
+			$timestamp = time() - strtotime(trim($text),1);
 		} else {
 			$this->replace($text, $this->_deleteSign[$lang]);
-			$timestamp = strtotime($text);
+			$timestamp = strtotime(trim($text));
 		}
 		return $timestamp;
 	}
