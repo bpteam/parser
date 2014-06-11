@@ -11,7 +11,7 @@ namespace Parser;
 
 
 class cCalendar  extends cCatalog{
-	protected $_month, $_chronology;
+	protected $_month, $_chronology, $_typeTime, $_time, $_deleteSign;
 	function __construct(){
 		$this->_classDir = dirname(__FILE__);
 		$this->_chronology = $this->loadConfig('chronology');
@@ -21,19 +21,14 @@ class cCalendar  extends cCatalog{
 		$this->_deleteSign = $this->loadConfig('delete_sign');
 	}
 
-	public function getTimestamp($text, $lang = 'ru'){
-		$this->replace($text, $this->_month[$lang]);
-		$this->replace($text, $this->_time[$lang]);
-		$this->replace($text, $this->_chronology[$lang]);
-		if(preg_match($this->_typeTime[$lang]['back'], $text)){
-			$this->replace($text, $this->_deleteSign[$lang]);
-			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
-			$timestamp = time() - strtotime(trim($text),1);
+	public function getTimestamp($text, $lang = 'ru', $DataTimeFormat = null){
+		$time = $this->convertToStrToTime($text, $lang);
+		if($DataTimeFormat){
+			$dt = \DateTime::createFromFormat ( $DataTimeFormat, $time);
+			return $dt->getTimestamp();
 		} else {
-			$this->replace($text, $this->_deleteSign[$lang]);
-			$timestamp = strtotime(trim($text));
+			return strtotime($time);
 		}
-		return $timestamp;
 	}
 
 	private function replace( &$text, $patterns){
@@ -58,5 +53,20 @@ class cCalendar  extends cCatalog{
 			}
 		}
 		return false;
+	}
+
+	public function convertToStrToTime($text, $lang = 'ru'){
+		$this->replace($text, $this->_month[$lang]);
+		$this->replace($text, $this->_time[$lang]);
+		$this->replace($text, $this->_chronology[$lang]);
+		if(preg_match($this->_typeTime[$lang]['back'], $text)){
+			$this->replace($text, $this->_deleteSign[$lang]);
+			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
+			$text = '-'.trim($text);
+		} else {
+			$this->replace($text, $this->_deleteSign[$lang]);
+			$text = trim($text);
+		}
+		return $text;
 	}
 }
