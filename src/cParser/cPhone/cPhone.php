@@ -70,22 +70,33 @@ class cPhone extends cCatalog{
 		return '';
 	}
 
-	public function hidePhone($text){
+	public function hidePhone($text, $replaceChar = '', $countNumbers = 5){
+		$text = $this->hideMobile($text, $replaceChar, $countNumbers);
+		$text = $this->hideHome($text, $replaceChar, $countNumbers);
+		return $text;
+	}
 
+	public function hideMobile($text, $replaceChar = '', $countNumbers = 7){
+		$replaceChar = str_pad($replaceChar,$countNumbers, $replaceChar);
+		$countNumbers = $countNumbers - ($countNumbers * 2);
 		$data = $this->parsingText($text, $this->mobileRegEx);
 		if(isset($data['phone']) && $data['phone']){
 			foreach($data['phone'] as $phone){
-				$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+				$text = preg_replace('%(' . preg_quote(substr($phone, $countNumbers)) . ')%msu', $replaceChar, $text);
 			}
 		}
+		return $text;
+	}
 
+	public function hideHome($text, $replaceChar = '', $countNumbers = 5){
+		$replaceChar = str_pad($replaceChar,$countNumbers, $replaceChar);
+		$countNumbers = $countNumbers - ($countNumbers * 2);
 		$data = $this->parsingText($text, $this->homeRegEx);
 		if(isset($data['phone']) && $data['phone']){
 			foreach($data['phone'] as $phone){
-				$text = preg_replace('%(' . preg_quote($phone) . ')%msu', '', $text);
+				$text = preg_replace('%(' . preg_quote(substr($phone, $countNumbers)) . ')%msu', $replaceChar, $text);
 			}
 		}
-
 		return $text;
 	}
 }
