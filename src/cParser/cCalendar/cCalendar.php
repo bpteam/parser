@@ -23,8 +23,7 @@ class cCalendar  extends cCatalog{
 
 	public function getTimestamp($text, $lang = 'ru', $DataTimeFormat = null){
 		$time = $this->convertToStrToTime($text, $lang);
-		if($DataTimeFormat){
-			$dt = \DateTime::createFromFormat ( $DataTimeFormat, $time);
+		if($DataTimeFormat && $dt = \DateTime::createFromFormat($DataTimeFormat, $time)){
 			return $dt->getTimestamp();
 		} else {
 			return strtotime($time);

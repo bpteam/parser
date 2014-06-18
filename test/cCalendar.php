@@ -14,6 +14,7 @@ $class = 'cCalendar';
 $functions = array(
 	'month',
 	'chronology',
+	'getTimestamp',
 );
 
 echo $class ."</br>";
@@ -61,4 +62,14 @@ function cCalendar_chronology(){
 		}
 	}
 	return true;
+}
+
+function cCalendar_getTimestamp(){
+	$calendar = new \Parser\cCalendar();
+	$timeTest = ' вчера в 11:09';
+	$timeResult = strtotime('yesterday 11:09');
+	$timeTest2 = ' 1 июня в 23:06';
+	$dt = \DateTime::createFromFormat('j F H:i', '1 June 23:06');
+	$timeResult2 = $dt->getTimestamp();
+	return $timeResult == $calendar->getTimestamp($timeTest, 'ru') && $timeResult2 == $calendar->getTimestamp($timeTest2, 'ru', 'j F H:i');
 }
