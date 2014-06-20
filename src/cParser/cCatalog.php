@@ -16,7 +16,7 @@ class cCatalog {
 	 * @var array
 	 */
 	protected $_categories;
-	protected $_units;
+	protected $_units = array();
 	protected $_currentPage = 1;
 	protected $_classDir;
 	protected $_configDir = 'config';
@@ -60,7 +60,7 @@ class cCatalog {
 	 * @return array
 	 */
 	public function getUnits() {
-		return $this->_units;
+		return $this->_units?:array();
 	}
 
 	public function setUnit($name ,$unit){
@@ -216,13 +216,15 @@ class cCatalog {
 
 	public function pagination($text, $regEx = '%<a href="(?<url>/page/(?<num>\d+))">%ims', $currentPage = '%<span\s*id="current">(?<current_page>\d+)</a>%', $parentRegEx = '%(?<text>.*)%ims'){
 		$result  = $this->parsingText($text, $regEx, $parentRegEx);
-		$current = $this->parsingText($text, $currentPage, $parentRegEx);
-		$this->setCurrentPage(isset($current['current_page'])?$current['current_page'][0]:1);
-		$result['num'] = array_unique($result['num']);
-		asort($result['num']);
 		$pages = array();
-		foreach($result['num'] as $key => $value){
-			$pages[$value] = $result['url'][$key];
+		if(isset($result['num'])){
+			$current = $this->parsingText($text, $currentPage, $parentRegEx);
+			$this->setCurrentPage(isset($current['current_page'])?$current['current_page'][0]:1);
+			$result['num'] = array_unique($result['num']);
+			asort($result['num']);
+			foreach($result['num'] as $key => $value){
+				$pages[$value] = $result['url'][$key];
+			}
 		}
 		return $pages;
 	}
@@ -251,7 +253,7 @@ class cCatalog {
 					unset($data[$key]);
 				}
 			}
-			return count($data) ? $data : array();
+			return $data?:array();
 		}
 		return array();
 	}
