@@ -54,12 +54,13 @@ class cParser {
 	}
 
 
-	protected function loadContent($url){
+	protected function loadContent($url, $checkRegEx = null){
+		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
-			$answer = $this->singleCurl->load($url);
+			$answer = $this->singleCurl->load($url, $checkRegEx);
 			$answer = array($answer);
 		} elseif(is_array($url)){
-			$answer = $this->multiCurl->load($url);
+			$answer = $this->multiCurl->load($url, $checkRegEx);
 		} else {
 			return false;
 		}
