@@ -10,4 +10,5 @@
 return array(
 	'uk' => '38',
 	'ru' => '7',
+	'old_format_uk_or_ru' => '8',
 );
