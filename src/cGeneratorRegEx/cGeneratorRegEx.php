@@ -27,7 +27,7 @@ class cGeneratorRegEx {
 	}
 
 	static function allLetter($text){
-		preg_match_all('%(?<symbol>.)%', $text, $match);
+		preg_match_all('%(?<symbol>.)%ms', $text, $match);
 		$regEx = '';
 		foreach($match['symbol'] as $symbol){
 			$regEx .= '(' . mb_strtoupper($symbol). '|' . mb_strtolower($symbol) . ')';
@@ -47,5 +47,29 @@ class cGeneratorRegEx {
 		}
 		$or = '('.implode('|',array_unique($recursiveData)).')';
 		return strlen($or)>3 ? $or : '' ;
+	}
+
+	static function buildSeparatorString($data = '', $separator = ''){
+			if(preg_match_all('%(?<symbol>.)%ms', $data, $match)){
+				$data = implode($separator, $match['symbol']);
+			}
+			return $data;
+	}
+
+	static function buildSeparatorArray($data = array(), $separator = ''){
+		return implode($separator, $data);
+	}
+
+	static function buildSeparatorArrayString($data = array(), $separator = '', &$recursiveData = array()){
+		if(is_array($data)){
+			foreach($data as $value){
+				if(is_array($value)){
+					self::buildSeparatorArrayString($value, $separator, $recursiveData);
+				} else {
+					$recursiveData[] = self::buildSeparatorString($value, $separator);
+				}
+			}
+		}
+		return $recursiveData;
 	}
 } 

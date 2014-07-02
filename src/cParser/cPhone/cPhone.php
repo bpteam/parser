@@ -10,19 +10,48 @@
 namespace Parser;
 
 
+use GetContent\cStringWork;
+
 class cPhone extends cCatalog{
 	private $_countryCode;
 	private $_settleCode;
 	private $_mobileCode;
 	private $_separator = '(?:\(|\)|\-|\_|\[|\]|\s+){0,3}';
+	private $_codeSeparator = '(?:\D)?';
 
 	function __construct(){
 		$this->_classDir = dirname(__FILE__);
 		$this->_countryCode = $this->loadConfig('country_code');
 		$this->_mobileCode = $this->loadConfig('mobile_code');
 		$this->_settleCode = $this->loadConfig('settle_code');
-		$this->mobileRegEx = '%(?<phone>(?<country_code>' . cGeneratorRegEx::buildOrFromArray($this->_countryCode) . ')?' . $this->_separator . '(?<provider>' . cGeneratorRegEx::buildOrFromArray($this->_mobileCode) . "){$this->_separator}(?<1_number>\\d){$this->_separator}(?<2_number>\\d){$this->_separator}(?<3_number>\\d){$this->_separator}(?<4_number>\\d){$this->_separator}(?<5_number>\\d){$this->_separator}(?<6_number>\\d){$this->_separator}(?<7_number>\\d))%ims";
-		$this->homeRegEx = '%(([^\d]|\s,){2}\s*|^)(?<phone>(?<country_code>' . cGeneratorRegEx::buildOrFromArray($this->_countryCode). ')?' . $this->_separator . "(?<provider>" . cGeneratorRegEx::buildOrFromArray($this->_settleCode) . ")?{$this->_separator}(?<1_number>\\d){$this->_separator}(?<2_number>\\d){$this->_separator}(?<3_number>\\d){$this->_separator}(?<4_number>\\d){$this->_separator}(?<5_number>\\d){$this->_separator}(?<6_number>\\d)?{$this->_separator}(?<7_number>\\d)?)(([^\\d]|\\s,){2}.*$|([^\\d]|\\s,\\.){0,3}$)%ims";
+		$mobile = array(
+			'%(?<phone>',
+			'(?<country_code>' . cGeneratorRegEx::buildOrFromArray(cGeneratorRegEx::buildSeparatorArrayString($this->_countryCode, $this->_codeSeparator)) . ')?',
+			'(?<provider>' . cGeneratorRegEx::buildOrFromArray(cGeneratorRegEx::buildSeparatorArrayString($this->_mobileCode, $this->_codeSeparator)) . ')',
+			'(?<1_number>\d)',
+			'(?<2_number>\d)',
+			'(?<3_number>\d)',
+			'(?<4_number>\d)',
+			'(?<5_number>\d)',
+			'(?<6_number>\d)',
+			'(?<7_number>\d)',
+			')%ims',
+		);
+		$home = array(
+			'%(([^\d]|\s,){2}\s*|^)',
+			'(?<phone>(?<country_code>' . cGeneratorRegEx::buildOrFromArray(cGeneratorRegEx::buildSeparatorArrayString($this->_countryCode, $this->_codeSeparator)). ')?',
+			'(?<provider>' . cGeneratorRegEx::buildOrFromArray(cGeneratorRegEx::buildSeparatorArrayString($this->_settleCode, $this->_codeSeparator)) . ')?',
+			'(?<1_number>\d)',
+			'(?<2_number>\d)',
+			'(?<3_number>\d)',
+			'(?<4_number>\d)',
+			'(?<5_number>\d)',
+			'(?<6_number>\d)?',
+			'(?<7_number>\d)?)',
+			'(([^\\d]|\\s,){2}.*$|([^\\d]|\\s,\\.){0,3}$)%ims',
+		);
+		$this->mobileRegEx = cGeneratorRegEx::buildSeparatorArray($mobile, $this->_separator);
+		$this->homeRegEx = cGeneratorRegEx::buildSeparatorArray($home, $this->_separator);
 	}
 
 	public function findMobile($text){
@@ -54,7 +83,7 @@ class cPhone extends cCatalog{
 					$phone .= $data[$colName][$key];
 				}
 			}
-			$phones[] = $phone;
+			$phones[] = cStringWork::clearNote($phone,'%\D%','');
 		}
 		return $phones;
 	}
