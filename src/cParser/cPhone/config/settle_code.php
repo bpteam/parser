@@ -8,7 +8,7 @@
  */
 return array(
 	'uk' => array(
-		'lugansk' => '0642',
-		'odessa' => '048',
+		'lugansk' => array('0642'),
+		'odessa' => array('048'),
 	),
 );

@@ -56,12 +56,12 @@ class cPhone extends cCatalog{
 
 	public function findMobile($text){
 		$data = $this->parsingText($text, $this->mobileRegEx);
-		return $data ? $this->buildNumber($data, 'phone', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
+		return $data ? $this->buildNumber($data, 'phone', 'mobile', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
 	}
 
 	public function findHome($text){
 		$data = $this->parsingText($text, $this->homeRegEx);
-		return $data ? $this->buildNumber($data, 'phone', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
+		return $data ? $this->buildNumber($data, 'phone', 'settle', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
 
 	}
 
@@ -71,25 +71,32 @@ class cPhone extends cCatalog{
 		return array_merge($mobile,$home);
 	}
 
-	private function buildNumber($data, $rowName = 'phone', $pattern = array('country_code', 'provider', 'number')){
+	private function buildNumber($data, $rowName = 'phone', $type = 'mobile', $pattern = array('country_code', 'provider', 'number')){
 		$phones = array();
 		foreach($data[$rowName] as $key => $value){
-			if((!isset($data['country_code'][$key]) || !$data['country_code'][$key]) && isset($data['provider'][$key])){
-				$data['country_code'][$key] = $this->getCountryCode($data['provider'][$key]);
+			if((!isset($data['country_code'][$key]) || !$data['country_code'][$key] || $data['country_code'][$key] == 8) && isset($data['provider'][$key])){
+				$data['country_code'][$key] = $this->getCountryCode($this->toNumber($data['provider'][$key]), $type);
 			}
 			$phone = '';
 			foreach($pattern as $colName){
 				if(isset($data[$colName][$key])){
-					$phone .= $data[$colName][$key];
+					$phone .= $this->toNumber($data[$colName][$key]);
 				}
 			}
-			$phones[] = cStringWork::clearNote($phone,'%\D%','');
+			$phones[] = $phone;
 		}
 		return $phones;
 	}
 
-	private function getCountryCode($providerCode){
-		foreach ($this->_mobileCode as $sign => $providers) {
+	private function getCountryCode($providerCode, $type){
+		switch($type){
+			case 'settle':
+				$source = $this->_settleCode;
+				break;
+			default:
+				$source = $this->_mobileCode;
+		}
+		foreach ($source as $sign => $providers) {
 			foreach($providers as $providerName => $providerCodes){
 				if(in_array($providerCode, $providerCodes)){
 					return $this->_countryCode[$sign];
@@ -127,5 +134,9 @@ class cPhone extends cCatalog{
 			}
 		}
 		return $text;
+	}
+
+	public function toNumber($data){
+		return cStringWork::clearNote($data,'%\D%','');
 	}
 }
