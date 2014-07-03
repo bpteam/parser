@@ -235,6 +235,24 @@ class cCatalog {
 		return isset($pages[$this->getCurrentPage()]) ? $pages[$this->getCurrentPage()] : false;
 	}
 
+	public function generatePaginationLinks($text, $regEx = '%<a href="(?<url>(?<url_start>.*/page/)(?<num>\d+)(?<url_end>.*))">%ims', $regExTotalPages = '%(?<url>.*/page/)(?<total_pages>last)">%ims', $start = 1, $end = 0, $parentRegEx = '%(?<text>.*)%ims'){
+		$resultPagination = $this->parsingText($text, $regEx, $parentRegEx);
+		$resultTotalPages = $this->parsingText($text, $regExTotalPages, $parentRegEx);
+		$urlOfList = array();
+		if(!isset($resultTotalPages['total_pages'][0])){
+			$resultTotalPages['total_pages'][0] = 1;
+		}
+		if($end > $resultTotalPages['total_pages'][0] || !$end){
+			$end = $resultTotalPages['total_pages'][0];
+		}
+		if($start < $resultTotalPages['total_pages'][0] && $resultPagination){
+			for( ; $start<=$end; $start++){
+				$urlOfList[$start] = $resultPagination['url_start'][0] . $start . $resultPagination['url_end'][0];
+			}
+		}
+		return $urlOfList;
+	}
+
 	public function parsingText($text, $mainRegEx, $parentRegEx = '%(?<text>.*)%ims'){
 		if(!is_array($mainRegEx)){
 			$mainRegEx = array($mainRegEx);
