@@ -71,7 +71,7 @@ class cParser {
 		$this->parseCatalog($url);
 		foreach($this->catalog->getUnits() as $unit){
 			if($text = $this->loadContent($unit['unique'])){
-				$this->parseAd($unit['unique'],$text);
+				$this->parseAd($unit['unique'],current($text));
 			}
 		}
 	}
