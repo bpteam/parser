@@ -11,7 +11,7 @@ namespace Parser;
 use \GetContent\cSingleCurl as cSingleCurl;
 use \GetContent\cMultiCurl as cMultiCurl;
 
-class cParser {
+abstract class cParser {
 
 	/**
 	 * @var cMultiCurl
@@ -53,6 +53,7 @@ class cParser {
 		$this->catalog    = new cCatalog();
 	}
 
+	abstract public function parseCatalogLinks($url);
 
 	protected function loadContent($url, $checkRegEx = null){
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
