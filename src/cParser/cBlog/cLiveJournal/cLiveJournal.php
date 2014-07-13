@@ -9,8 +9,6 @@
 
 namespace Parser;
 
-use GetContent\cStringWork;
-
 require_once dirname(__FILE__) . "/../../../../../loader-curl-phantomjs-proxy/include.php";
 
 class cLiveJournal extends cBlog {
@@ -165,7 +163,7 @@ class cLiveJournal extends cBlog {
 		return isset($this->_comments[$id]);
 	}
 
-	public function nextPage($page){
+	public function nextPage($page, $regEx = null, $currentPage = null, $parentRegEx = null){
 		preg_match_all($this->getConfig('previous_url'), $page, $url);
 		return isset($url['previous_url']) && $url['previous_url'][0] ? $url['previous_url'][0] : false;
 	}
