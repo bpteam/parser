@@ -14,6 +14,10 @@ use \GetContent\cMultiCurl as cMultiCurl;
 abstract class cParser {
 
 	/**
+	 * @var cSingleCurl
+	 */
+	public $singleCurl;
+	/**
 	 * @var cMultiCurl
 	 */
 	public $multiCurl;
@@ -74,7 +78,7 @@ abstract class cParser {
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
 			$answer = $this->singleCurl->load($url, $checkRegEx);
-			$answer = array($answer);
+			$answer = array('url' => $answer);
 		} elseif(is_array($url)){
 			$answer = $this->multiCurl->load($url, $checkRegEx);
 		} else {
