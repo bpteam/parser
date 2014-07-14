@@ -47,6 +47,21 @@ abstract class cParser {
 	protected $_countDouble = 0;
 	protected $_maxCountDouble = 15;
 
+	protected $_mainDomain;
+
+	public function getMainDomain(){
+		return $this->_mainDomain;
+	}
+
+	public function setMainDomain($newVal){
+		$this->_mainDomain = $newVal;
+	}
+
+	protected function parsMainDomain($url){
+		$data = \GetContent\cStringWork::parseUrl($url);
+		return $data['scheme'] . '://' . $data['host'];
+	}
+
 	function __construct(){
 		$this->singleCurl = new cSingleCurl();
 		$this->multiCurl  = new cMultiCurl();
