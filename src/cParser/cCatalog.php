@@ -29,7 +29,7 @@ class cCatalog {
 	 * @param string $url
 	 * @param string $parent
 	 */
-	public function setCategoryUrl($name, $url, $parent) {
+	public function setCategoryUrl($name, $url, $parent = '') {
 		$this->_categories[$name]['url'] = $url;
 		$this->_categories[$name]['parent'] = $parent;
 	}
