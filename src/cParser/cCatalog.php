@@ -21,6 +21,7 @@ class cCatalog {
 	protected $_classDir;
 	protected $_configDir = 'config';
 	protected $_config;
+	protected $_defaultConfig;
 	protected $_403RegEx = '%403 Forbidden%ims';
 	protected $_404RegEx = '%404 Not Found%ims';
 
@@ -119,7 +120,14 @@ class cCatalog {
 	 * @return mixed
 	 */
 	public function getConfig($name) {
-		return $this->_config[$name];
+		if(isset($this->_config[$name])){
+			$config = $this->_config[$name];
+		} elseif(isset($this->_defaultConfig[$name])){
+			$config = $this->_defaultConfig[$name];
+		} else {
+			$config = false;
+		}
+		return $config;
 	}
 
 	/**
@@ -156,11 +164,16 @@ class cCatalog {
 
 	function __construct() {
 		$this->_classDir = dirname(__FILE__);
+		$this->loadDefaultConfig();
 	}
 
 
 	public function loadConfig($name){
 		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . ($this->_configDir ? $this->_configDir . DIRECTORY_SEPARATOR : '') . $name . '.php';
+		return $this->_config;
+	}
+	protected function loadDefaultConfig(){
+		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . ($this->_configDir ? $this->_configDir . DIRECTORY_SEPARATOR : '') . 'regExDefault.php';
 		return $this->_config;
 	}
 
