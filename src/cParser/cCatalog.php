@@ -173,8 +173,8 @@ class cCatalog {
 		return $this->_config;
 	}
 	protected function loadDefaultConfig(){
-		$this->_config = require $this->_classDir . DIRECTORY_SEPARATOR . ($this->_configDir ? $this->_configDir . DIRECTORY_SEPARATOR : '') . 'regExDefault.php';
-		return $this->_config;
+		$this->_defaultConfig = require $this->_classDir . DIRECTORY_SEPARATOR . ($this->_configDir ? $this->_configDir . DIRECTORY_SEPARATOR : '') . 'regExDefault.php';
+		return $this->_defaultConfig;
 	}
 
 	/**
