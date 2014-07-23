@@ -80,6 +80,12 @@ class cCatalog {
 		return isset($this->_units[$unitName][$paramName]) ? $this->_units[$unitName][$paramName] : null;
 	}
 
+	public function deleteUnit($name){
+		$units = $this->getUnits();
+		unset($units[$name]);
+		$this->setUnits($units);
+	}
+
 	/**
 	 * @param int $currentPage
 	 */
