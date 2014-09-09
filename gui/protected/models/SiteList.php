@@ -102,6 +102,11 @@ class SiteList extends CActiveRecord
 		));
 	}
 
+	public function afterDelete(){
+		parent::afterDelete();
+		ParsUrl::model()->deleteAll('site_id=' . $this->id);
+	}
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

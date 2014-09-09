@@ -28,7 +28,7 @@ class SitePageController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','update','delete'),
+				'actions'=>array('update','index','admin','delete'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
