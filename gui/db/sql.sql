@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `parser`.`pars_url` (
   `module_id` INT NOT NULL,
   `site_id` INT NOT NULL,
   `state_id` INT NOT NULL,
+  `last_run` INT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_pars_url_type_url_idx` (`type_url_id` ASC),
   INDEX `fk_pars_url_module1_idx` (`module_id` ASC),
@@ -116,8 +117,15 @@ CREATE TABLE IF NOT EXISTS `parser`.`site_page` (
   `hash` CHAR(32) NOT NULL,
   `url` TEXT NULL,
   `html` TEXT NULL,
-  `time` INT NULL,
-  PRIMARY KEY (`hash`))
+  `time` INT NULL DEFAULT 0,
+  `site_id` INT NOT NULL,
+  PRIMARY KEY (`hash`),
+  INDEX `fk_site_page_site1_idx` (`site_id` ASC),
+  CONSTRAINT `fk_site_page_site1`
+    FOREIGN KEY (`site_id`)
+    REFERENCES `parser`.`site` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
