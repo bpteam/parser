@@ -20,14 +20,14 @@ return array(
 
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
-
+/*
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'007',
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('93.73.209.34','::1'),
 		),
-
+*/
 	),
 
 	// application components
