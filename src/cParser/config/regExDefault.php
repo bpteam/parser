@@ -20,6 +20,8 @@ return array(
 	'current_page' => '%<span\s*class="[^"]*current[^"]*">\s*<span>(?<current_page>\d+)</span>\s*</span>%ims',
 	'total_pages' => '%<input[^>]*class="{totalPages:\s*(?<total_pages>\d+)}"[^>]*>%imsU',
 	'pagination_parent' => '%(?<text>.*)%imsu',
-	'ad' => array(),
+	'ad' => array(
+		'data' => '%<div id="data">(?<data>.*?)</div>%imsu',
+	),
 	'ad_parent' => '%(?<text>.*)%imsu',
 );
