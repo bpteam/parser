@@ -13,11 +13,11 @@ use \GetContent\cGetContent as cGetContent;
 abstract class cParser {
 
 	/**
-	 * @var cGetContent
+	 * @var cGetContent |\GetContent\cSingleCurl
 	 */
 	public $single;
 	/**
-	 * @var cGetContent
+	 * @var cGetContent|\GetContent\cMultiCurl
 	 */
 	public $multi;
 	/**
