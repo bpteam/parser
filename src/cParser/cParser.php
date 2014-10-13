@@ -8,19 +8,18 @@
  */
 
 namespace Parser;
-use \GetContent\cSingleCurl as cSingleCurl;
-use \GetContent\cMultiCurl as cMultiCurl;
+use \GetContent\cGetContent as cGetContent;
 
 abstract class cParser {
 
 	/**
-	 * @var cSingleCurl
+	 * @var cGetContent
 	 */
-	public $singleCurl;
+	public $single;
 	/**
-	 * @var cMultiCurl
+	 * @var cGetContent
 	 */
-	public $multiCurl;
+	public $multi;
 	/**
 	 * @var cCatalog
 	 */
@@ -67,18 +66,18 @@ abstract class cParser {
 	}
 
 	function __construct(){
-		$this->singleCurl = new cSingleCurl();
-		$this->multiCurl  = new cMultiCurl();
-		$this->catalog    = new cCatalog();
+		$this->single  = new cGetContent('cSingleCurl');
+		$this->multi   = new cGetContent('cMultiCurl');
+		$this->catalog = new cCatalog();
 	}
 
 	protected function loadContent($url, $checkRegEx = null){
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
-			$answer = $this->singleCurl->load($url, $checkRegEx);
+			$answer = $this->single->load($url, $checkRegEx);
 			$answer = array('url' => $answer);
 		} elseif(is_array($url)){
-			$answer = $this->multiCurl->load($url, $checkRegEx);
+			$answer = $this->multi->load($url, $checkRegEx);
 		} else {
 			return false;
 		}

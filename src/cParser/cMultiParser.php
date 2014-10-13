@@ -14,11 +14,23 @@ class cMultiParser extends cParser {
 
 	protected $countStream = 50;
 
+	/**
+	 * @return int
+	 */
+	public function getCountStream() {
+		return $this->countStream;
+	}
+
+	/**
+	 * @param int $countStream
+	 */
+	public function setCountStream($countStream) {
+		$this->countStream = $countStream;
+	}
+
 	function __construct(){
 		parent::__construct();
 	}
-
-	public function parseCatalogLinks($url){}
 
 	public function parsing($url){
 		$this->parseCatalog($url);
