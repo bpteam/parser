@@ -8,6 +8,7 @@
  * @author: Evgeny Pynykh bpteam22@gmail.com
  */
 require_once dirname(__FILE__) . "/src/cParser/cParser.php";
+require_once dirname(__FILE__) . "/src/cParser/cMultiParser.php";
 require_once dirname(__FILE__) . "/src/cParser/cCatalog.php";
 require_once dirname(__FILE__) . "/src/cParser/cPhone/cPhone.php";
 require_once dirname(__FILE__) . "/src/cParser/cRealty/cRealty.php";
