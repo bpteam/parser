@@ -279,11 +279,13 @@ class cCatalog {
 		if(preg_match($parentRegEx, $text, $match)){
 			$data = array();
 			foreach($mainRegEx as $regEx){
+				$tmpData = array();
 				if(is_array($regEx)){
-					$data = $this->parsingText($match['text'],$regEx);
+					$tmpData = $this->parsingText($match['text'],$regEx);
 				}elseif(preg_match_all($regEx, $match['text'], $matches)){
-					$data = array_merge($data, $matches);
+					$tmpData = $matches;
 				}
+				$data = array_merge($data, $tmpData);
 			}
 			foreach($data as $key => $value){
 				if(preg_match('%^\d+$%ms', $key)){
