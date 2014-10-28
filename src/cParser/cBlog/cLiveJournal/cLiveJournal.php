@@ -9,8 +9,6 @@
 
 namespace Parser;
 
-require_once dirname(__FILE__) . "/../../../../../loader-curl-phantomjs-proxy/include.php";
-
 class cLiveJournal extends cBlog {
 	private $_journal = '';
 	private $_articleBlock = '';

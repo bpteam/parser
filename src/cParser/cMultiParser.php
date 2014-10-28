@@ -32,7 +32,7 @@ class cMultiParser extends cParser {
 		parent::__construct();
 	}
 
-	public function parsing($url){
+	public function parsingSite($url){
 		$this->parseCatalog($url);
 		foreach(array_chunk($this->catalog->getUnits(), $this->countStream) as $units){
 			$url = array();
@@ -55,12 +55,24 @@ class cMultiParser extends cParser {
 			if($urlOfList){
 				foreach(array_chunk($urlOfList, $this->countStream) as $urls){
 					$pageLists = $this->loadContent($urls);
-					foreach($pageLists as $page){
-						$this->parseListAds($page);
+					foreach($pageLists as $pageKey => $page){
+						if(!$this->parseListAds($page)){
+							\cSupport::inLog('error parse list ' . $urls[$pageKey] . ' in ' . $page);
+						}
 					}
 				}
 			} else {
 				$this->parseListAds($text);
+			}
+		}
+	}
+
+	public function parsAds($allUrls){
+		$allUrls = is_array($allUrls) ? $allUrls : array($allUrls);
+		foreach(array_chunk($allUrls, $this->countStream) as $urls){
+			$answer = $this->loadContent($urls);
+			foreach($answer as $key => $text){
+				$this->parseAd($urls[$key],$text);
 			}
 		}
 	}

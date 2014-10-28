@@ -84,7 +84,7 @@ abstract class cParser {
 		return $answer;
 	}
 
-	public function parsing($url){
+	public function parsingSite($url){
 		$this->parseCatalog($url);
 		foreach($this->catalog->getUnits() as $unit){
 			if($text = $this->loadContent($unit['unique'])){
@@ -104,7 +104,17 @@ abstract class cParser {
 	}
 
 	public function parseListAds($textList){
-		$this->catalog->unitList($textList, $this->catalog->getConfig('list'), $this->catalog->getConfig('list_parent'));
+		return $this->catalog->unitList($textList, $this->catalog->getConfig('list'), $this->catalog->getConfig('list_parent'));
+	}
+
+	public function parseAds($urls){
+		$urls = is_array($urls) ? $urls : array($urls);
+		foreach($urls as $url){
+			$answer = $this->loadContent($url);
+			foreach($answer as $text){
+				$this->parseAd($url,$text);
+			}
+		}
 	}
 
 	public function parseAd($unique,$text){
