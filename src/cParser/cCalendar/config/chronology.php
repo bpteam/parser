@@ -9,8 +9,8 @@
 $adText = '(шн(и(й|е|х|ми|м)|е(го|й|му)|яя|юю)|)';
 return array(
 	'ru' => array(
-		'yesterday' => "%вчера$adText%imsu",
-		'today'     => "%сегодня$adText%imsu",
-		'tomorrow'  => "%завтра$adText%imsu",
+		'yesterday' => "вчера$adText",
+		'today'     => "сегодня$adText",
+		'tomorrow'  => "завтра$adText",
 	),
 );

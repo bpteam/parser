@@ -9,6 +9,6 @@
  */
 return array(
 	'ru' => array(
-		'back' => "%назад%imsu",
+		'back' => "назад",
 	),
 );

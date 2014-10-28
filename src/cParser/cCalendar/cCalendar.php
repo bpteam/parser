@@ -32,13 +32,13 @@ class cCalendar  extends cCatalog{
 
 	private function replace( &$text, $patterns){
 		foreach($patterns as $data => $pattern){
-			$text = preg_replace($pattern, $data, $text);
+			$text = preg_replace($this->makeRegEx($pattern), $data, $text);
 		}
 	}
 
 	public function getMonthName($text, $lang = 'ru'){
 		foreach($this->_month[$lang] as $data => $pattern){
-			if(preg_match($pattern,$text)){
+			if(preg_match($this->makeRegEx($pattern),$text)){
 				return $data;
 			}
 		}
@@ -47,7 +47,7 @@ class cCalendar  extends cCatalog{
 
 	public function getChronologyName($text, $lang = 'ru'){
 		foreach($this->_chronology[$lang] as $data => $pattern){
-			if(preg_match($pattern,$text)){
+			if(preg_match($this->makeRegEx($pattern),$text)){
 				return $data;
 			}
 		}
@@ -58,14 +58,18 @@ class cCalendar  extends cCatalog{
 		$this->replace($text, $this->_month[$lang]);
 		$this->replace($text, $this->_time[$lang]);
 		$this->replace($text, $this->_chronology[$lang]);
-		if(preg_match($this->_typeTime[$lang]['back'], $text)){
+		if(preg_match($this->makeRegEx($this->_typeTime[$lang]['back']), $text)){
 			$this->replace($text, $this->_deleteSign[$lang]);
-			$text = preg_replace($this->_typeTime[$lang]['back'], '', $text);
+			$text = preg_replace($this->makeRegEx($this->_typeTime[$lang]['back']), '', $text);
 			$text = '-'.trim($text);
 		} else {
 			$this->replace($text, $this->_deleteSign[$lang]);
 			$text = trim($text);
 		}
 		return $text;
+	}
+
+	private function makeRegEx($pattern, $begin = '%(?:[^\w]|^|\s)', $end = '(?:[^\w]|$|\s)%imsu'){
+		return $begin.$pattern.$end;
 	}
 }

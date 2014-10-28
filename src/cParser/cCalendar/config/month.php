@@ -10,18 +10,18 @@ $endWordRu1 = '(ь|я|ем?|ю|ём)';
 $endWordRu2 = '(а|ем?|у|ом|)';
 return array(
 	'ru' => array(
-		'January'  => "%ян(\.|(в(\.|ар$endWordRu1|))|)%imsu",
-		'February' => "%фев(\.|рал$endWordRu1|)%imsu",
-		'March'    => "%мар(\.|(т$endWordRu2)|)%imsu",
-		'April'    => "%ап(\.|р(\.|ел$endWordRu1)|)%imsu",
-		'May'      => "%ма(й|я|ем?|ю)%imsu",
-		'June'     => "%июн(\.|$endWordRu1|)%imsu",
-		'July'     => "%июл(\.|$endWordRu1|)%imsu",
-		'August'   => "%авг(\.|(уст$endWordRu2)|)%imsu",
-		'September'=> "%сен(\.|(тябр$endWordRu1)|)%imsu",
-		'October'  => "%ок(\.|т(\.|ябр$endWordRu1)|)%imsu",
-		'November' => "%ноя(\.|(бр$endWordRu1)|)%imsu",
-		'December' => "%дек(\.|абр$endWordRu1|)%imsu",
+		'January'  => "ян(\.|(в(\.|ар$endWordRu1|))|)",
+		'February' => "фев(\.|рал$endWordRu1|)",
+		'March'    => "мар(\.|(т$endWordRu2)|)",
+		'April'    => "ап(\.|р(\.|ел$endWordRu1)|)",
+		'May'      => "ма(й|я|ем?|ю)",
+		'June'     => "июн(\.|$endWordRu1|)",
+		'July'     => "июл(\.|$endWordRu1|)",
+		'August'   => "авг(\.|(уст$endWordRu2)|)",
+		'September'=> "сен(\.|(тябр$endWordRu1)|)",
+		'October'  => "ок(\.|т(\.|ябр$endWordRu1)|)",
+		'November' => "ноя(\.|(бр$endWordRu1)|)",
+		'December' => "дек(\.|абр$endWordRu1|)",
 	),
 
 );
