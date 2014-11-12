@@ -48,10 +48,10 @@ class cMultiParser extends cParser {
 		}
 	}
 
-	public function parseCatalog($url){
+	public function parseCatalog($url, $pageLevel = false){
 		$textList = $this->loadContent($url);
 		foreach($textList as $text){
-			$urlOfList = $this->catalog->generatePaginationLinks($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('total_pages'), 1, 0, $this->catalog->getConfig('pagination_parent'));
+			$urlOfList = $this->catalog->generatePaginationLinks($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('total_pages'), 1, $pageLevel, $this->catalog->getConfig('pagination_parent'));
 			if($urlOfList){
 				foreach(array_chunk($urlOfList, $this->countStream) as $urls){
 					$pageLists = $this->loadContent($urls);

@@ -261,7 +261,7 @@ class cCatalog {
 		if(!isset($resultTotalPages['total_pages'][0])){
 			$resultTotalPages['total_pages'][0] = 1;
 		}
-		if($end > $resultTotalPages['total_pages'][0] || !$end){
+		if(!$end || $end > $resultTotalPages['total_pages'][0]){
 			$end = $resultTotalPages['total_pages'][0];
 		}
 		if($start < $resultTotalPages['total_pages'][0] && $resultPagination){

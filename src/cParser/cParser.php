@@ -93,14 +93,18 @@ abstract class cParser {
 		}
 	}
 
-	public function parseCatalog($url){
+	/**
+	 * @param      $url
+	 * @param int|bool $pageLevel max level to diving
+	 */
+	public function parseCatalog($url, $pageLevel = false){
 		do{
 			$textList = $this->loadContent($url);
 			foreach($textList as $text){
 				$this->parseListAds($text);
 				$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current_page'), $this->catalog->getConfig('pagination_parent'));
 			}
-		}while($url);
+		}while($url && $this->isEndDiving($pageLevel));
 	}
 
 	public function parseListAds($textList){
@@ -119,5 +123,9 @@ abstract class cParser {
 
 	public function parseAd($unique,$text){
 		$this->catalog->unit($unique, $text, $this->catalog->getConfig('ad'), $this->catalog->getConfig('ad_parent'));
+	}
+
+	protected function isEndDiving($pageLevel){
+		return $pageLevel && !($pageLevel < $this->catalog->getConfig('current_page'));
 	}
 } 
