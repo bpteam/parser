@@ -59,11 +59,11 @@ class cCalendar  extends cCatalog{
 		$this->replace($text, $this->_time[$lang]);
 		$this->replace($text, $this->_chronology[$lang]);
 		if(preg_match($this->makeRegEx($this->_typeTime[$lang]['back']), $text)){
-			$this->replace($text, $this->_deleteSign[$lang]);
+			$this->clearText($text, $lang);
 			$text = preg_replace($this->makeRegEx($this->_typeTime[$lang]['back']), '', $text);
 			$text = '-'.trim($text);
 		} else {
-			$this->replace($text, $this->_deleteSign[$lang]);
+			$this->clearText($text, $lang);
 			$text = trim($text);
 		}
 		return $text;
@@ -71,5 +71,11 @@ class cCalendar  extends cCatalog{
 
 	private function makeRegEx($pattern, $begin = '%(?:[^\w]|^|\s)', $end = '(?:[^\w]|$|\s)%imsu'){
 		return $begin.$pattern.$end;
+	}
+
+	private function clearText(&$text, $lang){
+		foreach($this->_deleteSign[$lang] as $data => $pattern){
+			$text = preg_replace('%'.$pattern.'%imsu', $data, $text);
+		}
 	}
 }
