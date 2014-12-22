@@ -22,7 +22,7 @@ runTest($functions, $class.'_');
 function cGeneratorRegEx_fromHtmlTag(){
 	$html = '<div class="hello_world" id="testid">';
 	$regEx = cGeneratorRegEx::fromHtmlTag($html);
-	return $regEx == '\s*<div[^>]*\s*class\s*=\s*["\']?hello_world["\']?\s*id\s*=\s*["\']?testid["\']?[^>]*>\s*';
+	return $regEx == '<div[^>]*\s*class\s*=\s*["\']?hello_world["\']?\s*id\s*=\s*["\']?testid["\']?[^>]*>';
 }
 
 function cGeneratorRegEx_buildOrFromArray(){

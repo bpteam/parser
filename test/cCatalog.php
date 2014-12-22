@@ -45,9 +45,9 @@ function cCatalog_categories(){
 	';
 
 	$parser = new cCatalog();
-	$parser->categories($html, '%<a[^>]*href=[\'"](?<url>[^\'"]+)[\'"][^>]*>(?<name>[^<]+)</a>%', '%<div[^>]*class\s*=\s*[\'"]menu[\'"][^>]*>(?<text>.+)</div>%imsU');
+	$parser->categories($html, '', '%<a[^>]*href=[\'"](?<url>[^\'"]+)[\'"][^>]*>(?<name>[^<]+)</a>%imsu', '%<div[^>]*class\s*=\s*[\'"]menu[\'"][^>]*>(?<text>.+)</div>%imsU');
 	$categories = $parser->getCategories();
-	return $categories['cat1'] == '/cat1' && $categories['cat2'] == '/cat2' && $categories['cat3'] == '/cat3';
+	return $categories['cat1']['url'] == '/cat1' && $categories['cat2']['url'] == '/cat2' && $categories['cat3']['url'] == '/cat3';
 }
 
 function cCatalog_unitList_grouping(){
@@ -144,7 +144,7 @@ function cCatalog_nextPage(){
 	</html>
 	';
 	$parser = new cCatalog();
-	$parser -> setCurrentPage(3);
-	$nextPage = $parser->nextPage($html, '%<a href="(?<url>part_url/page/(?<num>\d*))">%ims', '%<div\s*class="pagination">(?<text>.*)</div>%imsU');
+	$parser->setCurrentPage(3);
+	$nextPage = $parser->nextPage($html, '%<a href="(?<url>part_url/page/(?<num>\d*))">%ims', '%\| (?<current_page>\d+) \|%', '%<div\s*class="pagination">(?<text>.*)</div>%imsU');
 	return $nextPage == 'part_url/page/4';
 }

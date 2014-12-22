@@ -22,8 +22,6 @@ class cCatalog {
 	protected $_configDir = 'config';
 	protected $_config;
 	protected $_defaultConfig;
-	protected $_403RegEx = '%403 Forbidden%ims';
-	protected $_404RegEx = '%404 Not Found%ims';
 
 	/**
 	 * @param string $name
@@ -148,24 +146,6 @@ class cCatalog {
 	 */
 	public function getClassDir() {
 		return $this->_classDir;
-	}
-
-
-
-	public function set403RegEx($regEx){
-		$this->_403RegEx = $regEx;
-	}
-
-	public function get403RegEx(){
-		return $this->_403RegEx;
-	}
-
-	public function set404RegEx($regEx){
-		$this->_404RegEx = $regEx;
-	}
-
-	public function get404RegEx(){
-		return $this->_404RegEx;
 	}
 
 	function __construct() {

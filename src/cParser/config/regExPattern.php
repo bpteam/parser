@@ -23,4 +23,6 @@ return array(
 		'*' => 'regEx of property index:[*]'
 	),
 	'ad_parent' => 'parent of ad block index:[text]',
+	'404' => 'page is 404',
+	'empty_list' => 'list is empty',
 );

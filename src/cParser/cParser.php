@@ -51,6 +51,10 @@ abstract class cParser {
 	protected $_maxCountDouble = 15;
 
 	protected $_mainDomain;
+	/**
+	 * @var bool|string
+	 */
+	protected $lastError = false;
 
 	public function getMainDomain(){
 		return $this->_mainDomain;
@@ -64,6 +68,22 @@ abstract class cParser {
 		$data = \GetContent\cStringWork::parseUrl($url);
 		return $data['scheme'] . '://' . $data['host'];
 	}
+
+	/**
+	 * @return bool|string
+	 */
+	public function getLastError() {
+		return $this->lastError;
+	}
+
+	/**
+	 * @param bool|string $lastError
+	 */
+	public function setLastError($lastError) {
+		$this->lastError = $lastError;
+	}
+
+
 
 	function __construct(){
 		$this->single  = new cGetContent('cSingleCurl');
@@ -101,14 +121,21 @@ abstract class cParser {
 		do{
 			$textList = $this->loadContent($url);
 			foreach($textList as $text){
-				$this->parseListAds($text);
-				$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current_page'), $this->catalog->getConfig('pagination_parent'));
+				if($this->parseListAds($text)) {
+					$url = $this->catalog->nextPage($text, $this->catalog->getConfig('pagination'), $this->catalog->getConfig('current_page'), $this->catalog->getConfig('pagination_parent'));
+				} else {
+					break;
+				}
 			}
 		}while($url && $this->isEndDiving($pageLevel));
 	}
 
 	public function parseListAds($textList){
-		return $this->catalog->unitList($textList, $this->catalog->getConfig('list'), $this->catalog->getConfig('list_parent'));
+		if(!$this->haveError($textList)) {
+			return $this->catalog->unitList($textList, $this->catalog->getConfig('list'), $this->catalog->getConfig('list_parent'));
+		} else {
+			return false;
+		}
 	}
 
 	public function parseAds($urls){
@@ -122,10 +149,37 @@ abstract class cParser {
 	}
 
 	public function parseAd($unique,$text){
-		$this->catalog->unit($unique, $text, $this->catalog->getConfig('ad'), $this->catalog->getConfig('ad_parent'));
+		if(!$this->haveError($text)){
+			return $this->catalog->unit($unique, $text, $this->catalog->getConfig('ad'), $this->catalog->getConfig('ad_parent'));
+		} else {
+			return false;
+		}
 	}
 
 	protected function isEndDiving($pageLevel){
 		return $pageLevel && !($pageLevel < $this->catalog->getConfig('current_page'));
+	}
+
+	protected function haveError($text){
+		switch(true){
+			case $this->is404($text):
+				$this->setLastError('page is 404');
+				break;
+			case $this->isEmptyList($text):
+				$this->setLastError('list is empty');
+				break;
+			default:
+				$this->setLastError(false);
+		}
+		return $this->getLastError();
+	}
+
+	public function is404($text){
+		var_dump($this->catalog->getConfig('404'), $text);
+		return (bool)preg_match($this->catalog->getConfig('404'),$text);
+	}
+
+	public function isEmptyList($text){
+		return (bool)preg_match($this->catalog->getConfig('empty_list'),$text);
 	}
 } 
