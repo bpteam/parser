@@ -64,7 +64,7 @@ abstract class cParser {
 		$this->_mainDomain = $newVal;
 	}
 
-	protected function parsMainDomain($url){
+	public function parsMainDomain($url){
 		$data = \GetContent\cStringWork::parseUrl($url);
 		return $data['scheme'] . '://' . $data['host'];
 	}
@@ -95,7 +95,7 @@ abstract class cParser {
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
 			$answer = $this->single->load($url, $checkRegEx);
-			$answer = array('url' => $answer);
+			$answer = array($answer);
 		} elseif(is_array($url)){
 			$answer = $this->multi->load($url, $checkRegEx);
 		} else {
