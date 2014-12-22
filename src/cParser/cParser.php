@@ -175,7 +175,6 @@ abstract class cParser {
 	}
 
 	public function is404($text){
-		var_dump($this->catalog->getConfig('404'), $text);
 		return (bool)preg_match($this->catalog->getConfig('404'),$text);
 	}
 

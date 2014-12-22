@@ -56,9 +56,7 @@ class cMultiParser extends cParser {
 				foreach(array_chunk($urlOfList, $this->countStream) as $urls){
 					$pageLists = $this->loadContent($urls);
 					foreach($pageLists as $pageKey => $page){
-						if(!$this->parseListAds($page)){
-							\cSupport::inLog('error parse list ' . $urls[$pageKey] . ' in ' . $page);
-						}
+						$this->parseListAds($page);
 					}
 				}
 			} else {
