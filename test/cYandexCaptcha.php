@@ -6,7 +6,7 @@
  * Time: 11:07
  * Email: bpteam22@gmail.com
  */
-require_once dirname(__FILE__) . '/../../loader/include.php';
+require_once __DIR__ . '/../../loader/include.php';
 $gc = new \GetContent\cGetContent();
 $gc->setMode('phantom');
 $yandex = new \Parser\cYandexCaptcha();

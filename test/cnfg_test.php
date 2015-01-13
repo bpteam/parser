@@ -10,7 +10,7 @@ ini_set('default_charset', 'utf-8');
 ini_set('display_errors',1);
 error_reporting(E_ALL);
 set_time_limit(3600);
-require_once dirname(__FILE__) . '/../include.php';
+require_once __DIR__ . '/../include.php';
 
 echo "<a href='index.php'>..</a>";
 

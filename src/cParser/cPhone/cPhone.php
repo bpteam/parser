@@ -20,7 +20,7 @@ class cPhone extends cCatalog{
 	private $_codeSeparator = '(?:\D)?';
 
 	function __construct(){
-		$this->_classDir = dirname(__FILE__);
+		$this->_classDir = __DIR__;
 		$this->_countryCode = $this->loadConfig('country_code');
 		$this->_mobileCode = $this->loadConfig('mobile_code');
 		$this->_settleCode = $this->loadConfig('settle_code');

@@ -6,7 +6,7 @@
  * Time: 10:53
  * Email: bpteam22@gmail.com
  */
-require_once dirname(__FILE__) . '/../include.php';
+require_once __DIR__ . '/../include.php';
 if(isset($_POST['tag'])){
 	$regEx = Parser\cGeneratorRegEx::fromHtmlTag($_POST['tag']);
 }

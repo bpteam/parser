@@ -65,7 +65,7 @@ class cLiveJournal extends cBlog {
 
 
 	function __construct(){
-		$this->_classDir = dirname(__FILE__);
+		$this->_classDir = __DIR__;
 		$this->_postData = $this->loadConfig('post_data');
 		$this->curl = new \GetContent\cMultiCurl();
 	}

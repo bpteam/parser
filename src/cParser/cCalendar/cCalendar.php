@@ -13,7 +13,7 @@ namespace Parser;
 class cCalendar  extends cCatalog{
 	protected $_month, $_chronology, $_typeTime, $_time, $_deleteSign;
 	function __construct(){
-		$this->_classDir = dirname(__FILE__);
+		$this->_classDir = __DIR__;
 		$this->_chronology = $this->loadConfig('chronology');
 		$this->_month = $this->loadConfig('month');
 		$this->_typeTime = $this->loadConfig('type_time');

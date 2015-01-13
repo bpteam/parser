@@ -16,7 +16,7 @@ class cRealty extends cCatalog{
 	private $_regExTypeApartment;
 
 	function __construct(){
-		$this->_classDir = dirname(__FILE__);
+		$this->_classDir = __DIR__;
 		$this->_regExTypeSettle = $this->loadConfig('type_settle');
 		$this->_regExTypeApartment = $this->loadConfig('apartment_type');
 	}

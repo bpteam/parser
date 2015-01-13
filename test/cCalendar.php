@@ -8,7 +8,7 @@
  * @author: Evgeny Pynykh bpteam22@gmail.com
  */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "cnfg_test.php";
+require_once __DIR__ . DIRECTORY_SEPARATOR . "cnfg_test.php";
 
 $class = 'cCalendar';
 $functions = array(

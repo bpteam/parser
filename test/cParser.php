@@ -8,15 +8,15 @@
  * @author: Evgeny Pynykh bpteam22@gmail.com
  */
 
-require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "cnfg_test.php";
-require_once dirname(__FILE__) . '/../../loader/include.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . "cnfg_test.php";
+require_once __DIR__ . '/../../loader/include.php';
 use Parser\cParser as cParser;
 
 class cTestParser extends cParser{
 
 	function __construct(){
 		parent::__construct();
-		$this->catalog->setClassDir(dirname(__FILE__).'/support');
+		$this->catalog->setClassDir(__DIR__.'/support');
 	}
 }
 

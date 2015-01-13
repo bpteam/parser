@@ -136,7 +136,7 @@ class cBlog extends cCatalog{
 
 
 	function __construct(){
-		$this->_classDir = dirname(__FILE__);
+		$this->_classDir = __DIR__;
 	}
 
 	public function init($url){
