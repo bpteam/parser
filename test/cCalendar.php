@@ -71,5 +71,7 @@ function cCalendar_getTimestamp(){
 	$timeTest2 = ' 1 июня в 23:06';
 	$dt = \DateTime::createFromFormat('j F H:i', '1 June 23:06');
 	$timeResult2 = $dt->getTimestamp();
-	return $timeResult == $calendar->getTimestamp($timeTest, 'ru') && $timeResult2 == $calendar->getTimestamp($timeTest2, 'ru', 'j F H:i');
+	$result1 = $timeResult == $calendar->getTimestamp($timeTest, 'ru');
+	$result2 = $timeResult2 == $calendar->getTimestamp($timeTest2, 'ru', 'j F H:i');
+	return $result1 && $result2;
 }

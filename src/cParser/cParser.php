@@ -95,7 +95,7 @@ abstract class cParser {
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
 			$answer = $this->single->load($url, $checkRegEx);
-			$answer = array($answer);
+			$answer = [$answer];
 		} elseif(is_array($url)){
 			$answer = $this->multi->load($url, $checkRegEx);
 		} else {

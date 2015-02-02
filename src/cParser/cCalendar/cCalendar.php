@@ -32,7 +32,7 @@ class cCalendar  extends cCatalog{
 
 	private function replace( &$text, $patterns){
 		foreach($patterns as $data => $pattern){
-			$text = preg_replace($this->makeRegEx($pattern), $data, $text);
+			$text = preg_replace($this->makeRegEx($pattern), ' '.$data.' ', $text);
 		}
 	}
 
