@@ -56,12 +56,12 @@ class cPhone extends cCatalog{
 
 	public function findMobile($text){
 		$data = $this->parsingText($text, $this->mobileRegEx);
-		return $data ? $this->buildNumber($data, 'phone', 'mobile', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
+		return $data ? $this->buildNumber($data, 'phone', 'mobile', ['country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number']) : [];
 	}
 
 	public function findHome($text){
 		$data = $this->parsingText($text, $this->homeRegEx);
-		return $data ? $this->buildNumber($data, 'phone', 'settle', array('country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number')) : array();
+		return $data ? $this->buildNumber($data, 'phone', 'settle', ['country_code', 'provider', '1_number', '2_number', '3_number', '4_number', '5_number', '6_number', '7_number']) : [];
 
 	}
 
