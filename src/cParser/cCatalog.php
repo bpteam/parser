@@ -207,6 +207,7 @@ class cCatalog {
 	public function unit($unitName, $text, $regEx = array('%(?<param_one><a[^>]+>)%ims', '%(?<param_n><div>[^<]+</div>)%ims'), $parentRegEx = '%(?<text>.*)%ims'){
 		$result = $this->parsingText($text, $regEx, $parentRegEx);
 		if($result){
+			$result['unique'] = $unitName;
 			$this->addToUnit($unitName, $result);
 			return true;
 		}
