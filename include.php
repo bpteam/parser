@@ -18,3 +18,4 @@ require_once __DIR__ . "/src/cParser/cCaptcha/cCaptcha.php";
 require_once __DIR__ . "/src/cParser/cCalendar/cCalendar.php";
 require_once __DIR__ . "/src/cParser/cCaptcha/cYandexCaptcha/cYandexCaptcha.php";
 require_once __DIR__ . "/src/cGeneratorRegEx/cGeneratorRegEx.php";
+require_once __DIR__ . "/src/TextAnalyser/TextAnalyser.php";
