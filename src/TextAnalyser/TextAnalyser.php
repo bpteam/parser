@@ -143,19 +143,34 @@ class TextAnalyser {
 		}while(true);
 	}
 
-	public function exportToArray($min = 1, $max = 999999, $fromTable = false){
+	/**
+	 * @param int  $min min count
+	 * @param int  $max max count
+	 * @param bool|array $order [columnName => (true is ASC, false is DESC)]
+	 * @param bool|string $fromTable
+	 * @return array
+	 */
+	public function exportToArray($min = 1, $max = 999999, $order = false, $fromTable = false){
 		if(!$fromTable){
 			$fromTable = $this->getTableName();
 		}
+		$orderSQL = '';
+		if($order && is_array($order)){
+			$tmpOrder = [];
+			foreach($order as $col => $sort){
+				$tmpOrder[] =  $col . ' ' . ($sort?'ASC':'DESC');
+			}
+			$orderSQL = 'ORDER BY ' . implode(', ', $tmpOrder);
+		}
 		$returnData = [];
-		$sql = "SELECT * FROM {$fromTable} WHERE count BETWEEN {$min} AND {$max}";
+		$sql = "SELECT * FROM {$fromTable} WHERE count BETWEEN {$min} AND {$max} $orderSQL";
 		if($result = $this->mysqli->query($sql)) {
 			while ($data = $result->fetch_assoc()) {
-				$returnData[] = ['name' => $data['data'], 'size' => (int)$data['count']];
+				$returnData[$data['data']] = (float)$data['count'];
 			}
 			$result->free();
 		}
-		return ['name' => 'flare', 'children' => $returnData];
+		return $returnData;
 	}
 
 
