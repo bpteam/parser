@@ -23,6 +23,10 @@ class TextAnalyser {
 	protected $costRep = 1;
 	protected $costDel = 1;
 
+	public function setMaxPercentDiff($newVal){
+		$this->maxPercentDiff = $newVal;
+	}
+
 	/**
 	 * @return int
 	 */
