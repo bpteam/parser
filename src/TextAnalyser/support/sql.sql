@@ -15,9 +15,10 @@ CREATE TABLE IF NOT EXISTS `patterns_target`(
   `id` INT NOT NULL AUTO_INCREMENT,
   `pattern` VARCHAR(100),
   `target` VARCHAR(100),
+  `data_group` VARCHAR(100),
   PRIMARY KEY (`id`),
   INDEX `idx_target` (`target` ASC),
-  UNIQUE INDEX `idx_patt_tar` (`pattern` ASC, `target` ASC))
+  UNIQUE INDEX `idx_patt_tar` (`pattern` ASC, `target` ASC, `data_group` ASC))
   ENGINE = InnoDB,
   DEFAULT CHARACTER SET = utf8
   COLLATE = utf8_general_ci;
