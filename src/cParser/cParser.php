@@ -91,7 +91,7 @@ abstract class cParser {
 		$this->catalog = new cCatalog();
 	}
 
-	protected function loadContent($url, $checkRegEx = null){
+	public function loadContent($url, $checkRegEx = null){
 		$checkRegEx = $checkRegEx?:$this->catalog->getConfig('site_page');
 		if(is_string($url)){
 			$answer = $this->single->load($url, $checkRegEx);
@@ -111,6 +111,11 @@ abstract class cParser {
 				$this->parseAd($unit['unique'],current($text));
 			}
 		}
+	}
+
+	public function parseCategories($url){
+		$textPage = $this->loadContent($url);
+		$this->catalog->categories($textPage, false, $this->catalog->getConfig('category'), $this->catalog->getConfig('category_parent'));
 	}
 
 	/**

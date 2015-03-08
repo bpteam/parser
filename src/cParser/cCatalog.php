@@ -38,7 +38,7 @@ class cCatalog {
 	 * @return string
 	 */
 	public function getCategoryUrl($name) {
-		return $this->_categories[$name];
+		return $this->_categories[$name]['url'];
 	}
 
 	/**
