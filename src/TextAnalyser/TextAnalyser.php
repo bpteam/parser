@@ -19,6 +19,9 @@ class TextAnalyser {
 	protected $hiddenSymbol = ' ';
 	protected $maxPercentDiff = 15;
 
+	protected $text;
+	protected $explodedText = [];
+
 	protected $costIns = 1;
 	protected $costRep = 1;
 	protected $costDel = 1;
@@ -104,33 +107,45 @@ class TextAnalyser {
 	}
 
 	public function analyseText($text, $patterns){
-		$this->hideSymbols($text);
-		$explodedText = [];
+		$this->text = $text;
+		$this->hideSymbols($this->text);
 		$bestDiff = 101;
-		$bestTarget = false;
-		$bestText = false;
+		$bestTarget = null;
+		$bestText = null;
 		foreach($patterns as $pattern => $target){
-			$this->hideSymbols($pattern);
-			$patternStrlen = strlen($pattern);
-			$countWords = $this->countWordsInText($pattern);
-			if(!isset($explodedText[$countWords])){
-				$this->setCountWords($countWords);
-				$explodedText[$countWords] = $this->explodeText($text);
-			}
-			foreach($explodedText[$countWords] as $textPart){
-				$levenshtein = levenshtein($textPart, $pattern, $this->costIns, $this->costRep, $this->costDel);
-				$percentDiff = $levenshtein * 100 / $patternStrlen;
-				if($this->maxPercentDiff >= $percentDiff && $bestDiff > $percentDiff){
-					$bestText = $textPart;
-					$bestTarget = $target;
-					$bestDiff = $percentDiff;
-					if($percentDiff === 0){
-						break;
-					}
-				}
-			}
+			$this->analyseTextPart($pattern, $target, $bestText, $bestTarget, $bestDiff);
 		}
 		return ['text' => $bestText, 'target' => $bestTarget, 'diff' => $bestDiff];
+	}
+
+	public function analyseTextPart($pattern, $target, &$bestText, &$bestTarget, &$bestDiff){
+		$this->hideSymbols($pattern);
+		$patternStrlen = strlen($pattern);
+		$countWords = $this->countWordsInText($pattern);
+		if(!isset($explodedText[$countWords])){
+			$this->setCountWords($countWords);
+			$this->explodedText[$countWords] = $this->explodeText($this->text);
+		}
+		foreach($this->explodedText[$countWords] as $textPart){
+			$levenshtein = levenshtein($textPart, $pattern, $this->costIns, $this->costRep, $this->costDel);
+			$percentDiff = $levenshtein * 100 / $patternStrlen;
+			if($this->maxPercentDiff >= $percentDiff && $bestDiff > $percentDiff){
+				$bestText = $textPart;
+				$bestTarget = $target;
+				$bestDiff = $percentDiff;
+				if($percentDiff === 0)
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Анализ адрусов которые состоят из нескольких шаблонов
+	 * @param string $text
+	 * @param array $pattern [[pattern0 => target0], [pattern1 => target1]]
+	 */
+	public function compositeAnalyseText($text, $pattern){
+
 	}
 
 
