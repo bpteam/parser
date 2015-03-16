@@ -65,7 +65,7 @@ class cMultiParser extends cParser {
 		}
 	}
 
-	public function parsAds($allUrls){
+	public function parseAds($allUrls){
 		$allUrls = is_array($allUrls) ? $allUrls : array($allUrls);
 		foreach(array_chunk($allUrls, $this->countStream) as $urls){
 			$answer = $this->loadContent($urls);
