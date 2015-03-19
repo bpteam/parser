@@ -106,19 +106,32 @@ class TextAnalyser {
 		return preg_match_all($this->getWordRegEx(),$text);
 	}
 
-	public function analyseText($text, $patterns){
+	public function analyse($text, $patterns){
 		$this->text = $text;
+		$this->explodedText = [];
 		$this->hideSymbols($this->text);
+		if(is_array(current($patterns))){
+			return $this->compositeAnalyseText($patterns);
+		} else {
+			return $this->analyseText($patterns);
+		}
+	}
+
+	/**
+	 * @param $patterns
+	 * @return array
+	 */
+	protected function analyseText($patterns){
 		$bestDiff = 101;
 		$bestTarget = null;
 		$bestText = null;
 		foreach($patterns as $pattern => $target){
 			$this->analyseTextPart($pattern, $target, $bestText, $bestTarget, $bestDiff);
 		}
-		return ['text' => $bestText, 'target' => $bestTarget, 'diff' => $bestDiff];
+		return $bestTarget?['text' => $bestText, 'target' => $bestTarget, 'diff' => $bestDiff]:false;
 	}
 
-	public function analyseTextPart($pattern, $target, &$bestText, &$bestTarget, &$bestDiff){
+	protected function analyseTextPart($pattern, $target, &$bestText, &$bestTarget, &$bestDiff){
 		$this->hideSymbols($pattern);
 		$patternStrlen = strlen($pattern);
 		$countWords = $this->countWordsInText($pattern);
@@ -138,15 +151,60 @@ class TextAnalyser {
 			}
 		}
 	}
-
+/*
+ * Страна
+ * 	Область
+ * 		Район
+ * 			Город
+ * 				Метро
+ * 				Район Города
+ * 					Улица
+ * 						Дом
+ * 							Квартира
+ */
 	/**
 	 * Анализ адрусов которые состоят из нескольких шаблонов
-	 * @param string $text
-	 * @param array $pattern [[pattern0 => target0], [pattern1 => target1]]
+	 * @param array $patterns
+	 *    [
+	 *       [
+	 *           name => level_name,
+	 *           patterns => [pattern0 => target0, pattern1 => target1],
+	 *           sub_level => [
+	 *                             [
+	 *                                name => ...
+	 *                                ...
+	 *                                sub_level => ...
+	 *                             ],
+	 *                          ]
+	 *       ],
+	 *       [
+	 *           name => ...
+	 *           sub_level => ...
+	 *       ],
+	 *       ...
+	 *    ]
+	 *    вычисления составного ключа, например адрес нам нужно последовательно опуститься от страны до номера
+	 *    дома/квартиры, для этого передается во второй параметр двумерный массив где последовательно
+	 *    вычисляются сначала с верхнего уровня до самого нижнего сужая уровень поиска, после самый
+	 *    удачный(который собрал больше всего связей при анализе) возвращается пользователю.
+	 * @return array
 	 */
-	public function compositeAnalyseText($text, $pattern){
+	protected function compositeAnalyseText($patterns){
+		$bestResult = [];
 
+		foreach($patterns as $pattern) {
+			$levelResult = $this->analyseText($pattern['patterns']);
+			if($levelResult){
+				$result[$pattern['name']] = $levelResult;
+			}
+			if (isset($pattern['sub_level']) && is_array($pattern['sub_level']) && count($pattern['sub_level'])) {
+				$result += $this->compositeAnalyseText($pattern['sub_level']);
+			}
+			if(count($result) > count($bestResult)){
+				$bestResult = $result;
+			}
+		}
+		return $bestResult;
 	}
-
 
 }
